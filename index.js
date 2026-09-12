@@ -106,8 +106,8 @@ async function showMenu() {
 
   console.log(`
 ${C.cyan}──────────────────────────────────────────────────────────────${C.r}
-  ${C.b}${C.yellow}🤖  K.A.I.R.O  —  Kairos Opportune Timing Assistant${C.r}
-  ${C.d}Explore once. Learn the workflow. Reuse instantly with 0 tokens.${C.r}
+  ${C.b}${C.yellow}🤖  K.A.I.R.O  —  PS11 Resume & Application Agent${C.r}
+  ${C.d}Kairos Opportune Timing • PS11 9-Stage Prompt Pipeline • Fact-Checked${C.r}
 ${C.cyan}──────────────────────────────────────────────────────────────${C.r}
 `);
 
@@ -119,58 +119,23 @@ ${C.cyan}───────────────────────�
     console.log();
   }
 
-  console.log(`  ${C.b}What would you like to do?${C.r}\n`);
-  console.log(`  ${C.bgCyan}${C.b} 1 ${C.r} ${C.cyan}🛒  Shopping & Daily Routine${C.r} ${C.d}— Milk, Eggs, Groceries (Instacart/Blinkit/Zepto/Amazon)${C.r}`);
-  console.log(`  ${C.bgMag}${C.b} 2 ${C.r} ${C.magenta}🔍  Research${C.r}                 ${C.d}— Search, read articles, gather info${C.r}`);
-  console.log(`  ${C.bgBlue}${C.b} 3 ${C.r} ${C.blue}💼  Job Discovery & Auto-Apply${C.r}   ${C.d}— Daily Top 5, Match Score, AI Cover Letter${C.r}`);
-  console.log(`  ${C.bgCyan}${C.b} 4 ${C.r} ${C.cyan}📧  Cold Mail${C.r}                ${C.d}— Compose & send recruiter outreach (Gmail)${C.r}`);
-  console.log(`  ${C.bgMag}${C.b} 5 ${C.r} ${C.magenta}📅  Booking${C.r}                  ${C.d}— Book flights, hotels, trains${C.r}`);
-  console.log(`  ${C.bgBlue}${C.b} 6 ${C.r} ${C.blue}📱  Social${C.r}                   ${C.d}— Twitter, LinkedIn social browsing${C.r}`);
-  console.log(`  ${C.bgCyan}${C.b} 7 ${C.r} ${C.cyan}⚡  Custom Task${C.r}              ${C.d}— Describe any browser workflow${C.r}`);
-  console.log(`  ${C.bgMag}${C.b} 8 ${C.r} ${C.magenta}👤  Profile Setup${C.r}            ${C.d}— Setup/update auto-fill details${C.r}`);
+  console.log(`  ${C.b}PS11 Resume & Application Agent Options:${C.r}\n`);
+  console.log(`  ${C.bgBlue}${C.b} 1 ${C.r} ${C.blue}💼  PS11 Job Discovery & Daily Top 5 Dashboard${C.r} ${C.d}— 17-field schema & 7-Signal match score${C.r}`);
+  console.log(`  ${C.bgMag}${C.b} 2 ${C.r} ${C.magenta}🤖  PS11 9-Stage Prompt Library Tailoring${C.r} ${C.d}— Fact-Checked Resume, ATS Score & Change Report${C.r}`);
+  console.log(`  ${C.bgCyan}${C.b} 3 ${C.r} ${C.cyan}📧  Recruiter Outreach & Cold Mailing${C.r}      ${C.d}— Browser Webmail / Direct SMTP Email Dispatch${C.r}`);
+  console.log(`  ${C.bgMag}${C.b} 4 ${C.r} ${C.magenta}👤  Candidate Profile & Verified Evidence Setup${C.r}${C.d}— Candidate skills, experience, projects${C.r}`);
+  console.log(`  ${C.bgCyan}${C.b} 5 ${C.r} ${C.cyan}🎤  KAIRO JARVIS Voice Mode${C.r}               ${C.d}— Say "Hello KAIRO" or tap 3x Spacebar${C.r}`);
+  console.log(`  ${C.bgMag}${C.b} 6 ${C.r} ${C.magenta}🎙️  JARVIS Voice Acoustic Calibration${C.r}     ${C.d}— Calibrate KAIRO to your voice profile${C.r}`);
+  console.log(`  ${C.bgBlue}${C.b} 7 ${C.r} ${C.blue}⚡  Custom Task / General Webcmd Workflow${C.r}  ${C.d}— Execute any web automation goal${C.r}`);
   if (learned.length > 0) {
-    console.log(`  ${C.bgBlue}${C.b} 9 ${C.r} ${C.green}🔄  Replay Workflow${C.r}          ${C.d}— Replay a learned workflow${C.r}`);
+    console.log(`  ${C.bgBlue}${C.b} 8 ${C.r} ${C.green}🔄  Replay Learned Workflow${C.r}             ${C.d}— Sub-200ms DOM replay (0 tokens)${C.r}`);
   }
-  console.log(`  ${C.bgCyan}${C.b} 10 ${C.r} ${C.cyan}🎤 Voice Mode (JARVIS)${C.r}         ${C.d}— Talk to KAIRO ("Hello KAIRO" or 3x Spacebar)${C.r}`);
-  console.log(`  ${C.bgMag}${C.b} 11 ${C.r} ${C.magenta}🎙️ Voice Calibration${C.r}         ${C.d}— Train KAIRO on your voice profile${C.r}`);
   console.log();
 
-  const choice = await ask(`  ${C.b}Enter choice (1-11):${C.r} `);
+  const choice = await ask(`  ${C.b}Enter choice (1-${learned.length > 0 ? 8 : 7}):${C.r} `);
 
   switch (choice) {
     case "1": {
-      const routineItems = loadDailyRoutine();
-      console.log(`\n  ${C.cyan}🛒 Daily Routine Shopping & E-Commerce:${C.r}`);
-      if (routineItems.length > 0) {
-        console.log(`  ${C.green}Saved Daily Routine Items:${C.r}`);
-        routineItems.forEach((it, idx) => console.log(`   ${idx + 1}. ${it.name} (${it.platform})`));
-        console.log(`   ${routineItems.length + 1}. Add new daily routine item / Custom order\n`);
-
-        const pick = await ask(`  Choose item (1-${routineItems.length + 1}): `);
-        const selIdx = parseInt(pick) - 1;
-        if (selIdx >= 0 && selIdx < routineItems.length) {
-          const selected = routineItems[selIdx];
-          log("🛒", `Selected Daily Routine: "${selected.name}" on ${selected.platform}`, "green");
-          return `Buy ${selected.name} on ${selected.platform}. Open product page, click "Add to Cart" or "Buy Now", proceed to checkout, auto-fill address details using profile, and wait for me to complete payment.`;
-        }
-        if (selIdx === routineItems.length) {
-          await setupDailyRoutine();
-          return showMenu();
-        }
-      }
-
-      const product = await ask(`  ${C.yellow}What do you want to buy?${C.r} ${C.d}(e.g. 1 Gallon Milk, Eggs, Laptop)${C.r} `);
-      const site = await ask(`  ${C.yellow}Preferred site/app?${C.r} ${C.d}(e.g., Instacart, Blinkit, Zepto, Amazon, Flipkart, or press Enter for Google)${C.r} `);
-      const siteStr = site ? `on ${site}` : "by searching Google for the best option";
-      return `Buy "${product}" ${siteStr}. Open product page, click "Add to Cart" or "Buy Now", proceed to checkout, auto-fill address details using profile, and wait for me to complete payment.`;
-    }
-    case "2": {
-      const topic = await ask(`  ${C.yellow}What do you want to research?${C.r} `);
-      const where = await ask(`  ${C.yellow}Where to search?${C.r} ${C.d}(e.g., Google, Wikipedia, Reddit, or press Enter for Google)${C.r} `);
-      const whereStr = where || "Google";
-      return `Go to ${whereStr} and research "${topic}". Open the most relevant results, read the content, and gather key information.`;
-    }
-    case "3": {
       const jobResult = await renderJobDashboard();
       if (!jobResult) return showMenu();
       if (jobResult.goal) {
@@ -181,49 +146,33 @@ ${C.cyan}───────────────────────�
       }
       return showMenu();
     }
-    case "4": {
-      console.log(`\n  ${C.cyan}📧 Cold Email Assistant:${C.r}`);
+    case "2": {
+      const top5 = await getDailyTop5Jobs();
+      if (!top5 || top5.length === 0) {
+        log("⚠️", "No jobs found. Run discovery first.", "yellow");
+        return showMenu();
+      }
+      console.log(`\n  ${C.cyan}Select job to run PS11 9-Stage Prompt Library Tailoring Pipeline:${C.r}`);
+      top5.forEach((j, i) => console.log(`   ${i + 1}. ${j.title} at ${j.company} (${j.match_score}% match)`));
+      const pick = await ask(`  Choose job (1-${top5.length}): `);
+      const selJob = top5[parseInt(pick) - 1] || top5[0];
+      if (selJob) {
+        return handleJobSelection(selJob);
+      }
+      return showMenu();
+    }
+    case "3": {
+      console.log(`\n  ${C.cyan}📧 PS11 Recruiter Outreach & Cold Mailing:${C.r}`);
       const recipient = await ask(`  ${C.yellow}Recipient email address or recruiter contact?${C.r} ${C.d}(press Enter for recruiter/hr@company.com)${C.r} `) || "recruiter/hr@company.com";
       const subject = await ask(`  ${C.yellow}Email subject line?${C.r} ${C.d}(press Enter for Job Inquiry / Software Engineer Role)${C.r} `) || "Job Inquiry / Software Engineer Role";
 
       return `Open Gmail at https://mail.google.com, wait_for_login, click "Compose" button to open new email draft, set recipient to "${recipient}", set subject to "${subject}", and write personalized outreach email with candidate profile details.`;
     }
-    case "5": {
-      console.log(`\n  ${C.cyan}📅 Booking Details:${C.r}`);
-      const bookingType = await ask(`  ${C.yellow}What to book?${C.r} ${C.d}(e.g., Train, Flight, Hotel, Bus, Doctor)${C.r} `);
-      const from = await ask(`  ${C.yellow}From?${C.r} ${C.d}(city/station/location)${C.r} `);
-      const to = await ask(`  ${C.yellow}To?${C.r} ${C.d}(city/station/location)${C.r} `);
-      const date = await ask(`  ${C.yellow}Date?${C.r} ${C.d}(e.g., 15 Sep, tomorrow, or press Enter to skip)${C.r} `);
-      const passengers = await ask(`  ${C.yellow}Passengers?${C.r} ${C.d}(press Enter for 1)${C.r} `);
-      const site = await ask(`  ${C.yellow}Preferred site?${C.r} ${C.d}(e.g., IRCTC, MakeMyTrip, or press Enter for Google search)${C.r} `);
-
-      const dateStr = date ? ` on ${date}` : "";
-      const passStr = passengers ? ` for ${passengers} passengers` : "";
-      const siteStr = site ? `on ${site}` : "by searching Google for the best booking site";
-
-      return `Book a ${bookingType} from ${from} to ${to}${dateStr}${passStr} ${siteStr}. Navigate to the booking page, fill in the travel details (from: ${from}, to: ${to}${dateStr}${passStr}), search for available options, select the best one, fill in passenger details, and wait for me to complete payment.`;
-    }
-    case "6": {
-      const social = await ask(`  ${C.yellow}What social task?${C.r} (e.g., "check Twitter trending") `);
-      return social;
-    }
-    case "7": {
-      const custom = await ask(`  ${C.yellow}Describe your task:${C.r} `);
-      return custom;
-    }
-    case "8": {
+    case "4": {
       await setupProfile();
       return "__PROFILE_SETUP__";
     }
-    case "9": {
-      if (learned.length === 0) return showMenu();
-      const idx = await ask(`  ${C.yellow}Which workflow? (1-${learned.length}):${C.r} `);
-      const selected = learned[parseInt(idx) - 1];
-      if (selected) return selected;
-      log("❌", "Invalid selection", "red");
-      return showMenu();
-    }
-    case "10": {
+    case "5": {
       const voiceOK = checkVoiceAvailability();
       if (!voiceOK) {
         log("⚠️", "Voice not available on this system (Windows Speech not found).", "yellow");
@@ -233,8 +182,20 @@ ${C.cyan}───────────────────────�
       greetUser();
       return showMenu();
     }
-    case "11": {
+    case "6": {
       await calibrateVoiceProfile();
+      return showMenu();
+    }
+    case "7": {
+      const custom = await ask(`  ${C.yellow}Describe your task:${C.r} `);
+      return custom;
+    }
+    case "8": {
+      if (learned.length === 0) return showMenu();
+      const idx = await ask(`  ${C.yellow}Which workflow? (1-${learned.length}):${C.r} `);
+      const selected = learned[parseInt(idx) - 1];
+      if (selected) return selected;
+      log("❌", "Invalid selection", "red");
       return showMenu();
     }
     default: {

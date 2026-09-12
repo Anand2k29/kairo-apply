@@ -29,8 +29,10 @@ We built **kairo-apply** on top of the **webcmd** autonomous web architecture an
 > Features an autonomous 17-field job discovery schema, 7-signal weighted match matrix (0-100 score), and the 9-Stage PS11 Prompt Library Pipeline (`tailor → evaluate → revise → send`) with fact-checking guardrails. Supports batch auto-apply (`1-4`, `1-5`) with human-gated confirmation before submission.
 
 > [!IMPORTANT]
-> **🛒 OPTION 1 — Shopping & Daily Routine Automation**
-> Command KAIRO to purchase daily groceries or e-commerce products (*e.g., milk, eggs, laptops, phones*) across **Amazon**, **Flipkart**, **Instacart**, **Blinkit**, or **Zepto**. KAIRO searches the platform, navigates to product pages, adds items to cart, auto-fills shipping address details from your user profile, and stages checkout for human handoff.
+> **📧 Recruiter Emailing & Application Dispatch (No Firebase Keys Required)**
+> KAIRO supports dual email dispatch options out of the box:
+> 1. **Live Browser Webmail (Default — 0 Keys Needed)**: Uses Playwright Chromium to open Gmail at `https://mail.google.com`, click Compose, fill recipient, subject, and cover letter body, pausing for human handoff.
+> 2. **Direct SMTP Nodemailer (Optional Background Dispatch)**: Add `SMTP_USER` & `SMTP_PASS` (e.g. Gmail App Password) to `.env` for direct background email sending with tailored resume payloads.
 
 ---
 
