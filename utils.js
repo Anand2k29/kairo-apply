@@ -47,6 +47,15 @@ function getGeminiKeys() {
   return keys.filter(k => k.startsWith("AIzaSy"));
 }
 
+function getGroqKeys() {
+  const keys = [
+    process.env.GROQ_API_KEY?.trim(),
+    process.env.GROQ_API_KEY_2?.trim(),
+    process.env.GROQ_API_KEY_3?.trim(),
+  ].filter(Boolean);
+  return keys.filter(k => k.startsWith("gsk_"));
+}
+
 function getOpenRouterKeys() {
   return [
     process.env.OPENROUTER_API_KEY?.trim(),
@@ -54,6 +63,14 @@ function getOpenRouterKeys() {
     process.env.OPENROUTER_API_KEY_3?.trim(),
   ].filter(Boolean);
 }
+
+// Groq ultra-fast high-speed models (sub-300ms latency)
+const GROQ_MODELS = [
+  "llama-3.3-70b-versatile",
+  "llama3-70b-8192",
+  "mixtral-8x7b-32768",
+  "llama3-8b-8192",
+];
 
 // OpenRouter models to try in order (active high-speed models prioritized)
 const OPENROUTER_MODELS = [
@@ -318,13 +335,64 @@ async function tryOpenRouter(prompt, systemPrompt, options) {
   return null;
 }
 
+// ─── Tier 0: Groq Ultra-Fast API (Sub-300ms Latency) ─────────────────
+async function tryGroq(prompt, systemPrompt, options) {
+  const apiKeys = getGroqKeys();
+  if (apiKeys.length === 0) return null;
+
+  for (const apiKey of apiKeys) {
+    const tag = keyTag(apiKey);
+    const providerKeyId = `groq:${tag}`;
+
+    if (isOnCooldown(providerKeyId)) continue;
+
+    for (const model of GROQ_MODELS) {
+      const modelKeyId = `groq:${tag}:${model}`;
+      if (isOnCooldown(modelKeyId)) continue;
+
+      try {
+        log("⚡", `[Groq High-Speed] Groq ${model} (key ${tag})...`, "dim");
+        const resp = await axios.post("https://api.groq.com/openai/v1/chat/completions", {
+          model,
+          messages: [
+            ...(systemPrompt ? [{ role: "system", content: systemPrompt }] : []),
+            { role: "user", content: prompt }
+          ],
+          temperature: options.temperature ?? 0,
+        }, {
+          headers: {
+            "Authorization": `Bearer ${apiKey}`,
+            "Content-Type": "application/json",
+          },
+          timeout: options.timeout || 4000,
+        });
+
+        const text = resp.data.choices?.[0]?.message?.content;
+        if (text) {
+          log("✅", `[Groq High-Speed] Groq ${model} responded (<300ms latency)!`, "green");
+          return text;
+        }
+      } catch (err) {
+        const status = err.response?.status;
+        if (status === 429) setCooldown(modelKeyId, 30);
+        else setCooldown(modelKeyId, 60);
+      }
+    }
+  }
+  return null;
+}
+
 // ─── Main LLM Entry Point (Waterfall) ────────────────────────────────
 export async function callGemini(prompt, systemPrompt = "", options = {}) {
+  // Tier 0: Groq Ultra-Fast API (Primary high-speed tier if GROQ_API_KEY is configured)
+  const groqResult = await tryGroq(prompt, systemPrompt, options);
+  if (groqResult) return groqResult;
+
   // Tier 1: Gemini API (primary model - direct Google API)
   const geminiResult = await tryGemini(prompt, systemPrompt, options);
   if (geminiResult) return geminiResult;
 
-  // Tier 2: OpenRouter API (extensive free model cascade)
+  // Tier 2: OpenRouter API (extensive fallback model cascade)
   const orResult = await tryOpenRouter(prompt, systemPrompt, options);
   if (orResult) return orResult;
 
