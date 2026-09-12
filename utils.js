@@ -722,55 +722,83 @@ export async function askVision(screenshotBase64, prompt) {
 // Injects a floating status bar and detail panel into the browser page so user can SEE
 // all AI context, cover letters, and live actions directly on Chromium!
 export async function injectOverlay(page) {
-  await page.evaluate(() => {
-    if (document.getElementById('kairo-overlay')) return;
-    const overlay = document.createElement('div');
-    overlay.id = 'kairo-overlay';
-    overlay.innerHTML = `
-      <div id="sr-status" style="
-        position: fixed; top: 0; left: 0; right: 0; z-index: 2147483647;
-        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-        color: #fff; padding: 10px 20px; font-family: 'Segoe UI', system-ui, sans-serif;
-        font-size: 14px; display: flex; align-items: center; justify-content: space-between;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.5); border-bottom: 3px solid #7c3aed;
-      ">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <span style="font-size: 20px;">🤖</span>
-          <span style="font-weight: 700; color: #a78bfa; letter-spacing: 0.5px;">KAIRO Autonomous Agent</span>
-          <span id="sr-step-badge" style="background: rgba(124, 58, 237, 0.3); border: 1px solid #7c3aed; padding: 2px 10px; border-radius: 12px; font-size: 12px; color: #c4b5fd; font-weight: 600;">ACTIVE PLAYBACK</span>
-        </div>
-        <div id="sr-msg" style="color: #f3f4f6; font-weight: 500; font-size: 13px; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Initializing...</div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span id="sr-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: sr-pulse 1.2s infinite;"></span>
-          <span style="font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">Chromium Visual Mode</span>
-        </div>
-      </div>
-      <div id="kairo-detail-panel" style="
-        position: fixed; bottom: 20px; right: 20px; z-index: 2147483646;
-        background: rgba(15, 12, 41, 0.95); backdrop-filter: blur(12px);
-        border: 1px solid rgba(124, 58, 237, 0.5); border-radius: 12px;
-        color: #e2e8f0; padding: 14px 18px; width: 360px; max-height: 280px; overflow-y: auto;
-        font-family: 'Segoe UI', system-ui, sans-serif;
-        box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: none; transition: all 0.3s ease;
-      ">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">
-          <span style="font-weight: 700; font-size: 12px; color: #a78bfa; text-transform: uppercase; letter-spacing: 0.5px;">⚡ Live Action Context</span>
-          <span id="kairo-panel-tag" style="background: #7c3aed; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600;">CHROMIUM VISUAL</span>
-        </div>
-        <div id="kairo-panel-body" style="font-size: 12px; line-height: 1.5; color: #cbd5e1;"></div>
-      </div>
-      <style>
-        @keyframes sr-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
-        @keyframes sr-highlight {
-          0% { outline: 3px solid transparent; }
-          50% { outline: 4px solid #7c3aed; outline-offset: 3px; box-shadow: 0 0 15px rgba(124,58,237,0.6); }
+  try {
+    await page.evaluate(() => {
+      if (document.getElementById('kairo-overlay')) return;
+
+      function safeSetHTML(container, htmlString) {
+        try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(htmlString, 'text/html');
+          const nodes = [
+            ...Array.from(doc.head ? doc.head.childNodes : []),
+            ...Array.from(doc.body ? doc.body.childNodes : [])
+          ];
+          container.replaceChildren(...nodes);
+        } catch {
+          try {
+            if (window.trustedTypes && window.trustedTypes.createPolicy) {
+              let p;
+              try { p = window.trustedTypes.createPolicy('kairo', { createHTML: s => s }); }
+              catch { p = window.trustedTypes.defaultPolicy || { createHTML: s => s }; }
+              container.innerHTML = p.createHTML ? p.createHTML(htmlString) : htmlString;
+            } else {
+              container.innerHTML = htmlString;
+            }
+          } catch {
+            container.textContent = htmlString.replace(/<[^>]*>/g, '');
+          }
         }
-        .sr-highlight { animation: sr-highlight 1.5s ease-in-out 3 !important; }
-      </style>
-    `;
-    const target = document.body || document.documentElement;
-    if (target) target.appendChild(overlay);
-  });
+      }
+
+      const overlay = document.createElement('div');
+      overlay.id = 'kairo-overlay';
+      safeSetHTML(overlay, `
+        <div id="sr-status" style="
+          position: fixed; top: 0; left: 0; right: 0; z-index: 2147483647;
+          background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+          color: #fff; padding: 10px 20px; font-family: 'Segoe UI', system-ui, sans-serif;
+          font-size: 14px; display: flex; align-items: center; justify-content: space-between;
+          box-shadow: 0 4px 20px rgba(0,0,0,0.5); border-bottom: 3px solid #7c3aed;
+        ">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 20px;">🤖</span>
+            <span style="font-weight: 700; color: #a78bfa; letter-spacing: 0.5px;">KAIRO Autonomous Agent</span>
+            <span id="sr-step-badge" style="background: rgba(124, 58, 237, 0.3); border: 1px solid #7c3aed; padding: 2px 10px; border-radius: 12px; font-size: 12px; color: #c4b5fd; font-weight: 600;">ACTIVE PLAYBACK</span>
+          </div>
+          <div id="sr-msg" style="color: #f3f4f6; font-weight: 500; font-size: 13px; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Initializing...</div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span id="sr-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: sr-pulse 1.2s infinite;"></span>
+            <span style="font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">Chromium Visual Mode</span>
+          </div>
+        </div>
+        <div id="kairo-detail-panel" style="
+          position: fixed; bottom: 20px; right: 20px; z-index: 2147483646;
+          background: rgba(15, 12, 41, 0.95); backdrop-filter: blur(12px);
+          border: 1px solid rgba(124, 58, 237, 0.5); border-radius: 12px;
+          color: #e2e8f0; padding: 14px 18px; width: 360px; max-height: 280px; overflow-y: auto;
+          font-family: 'Segoe UI', system-ui, sans-serif;
+          box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: none; transition: all 0.3s ease;
+        ">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">
+            <span style="font-weight: 700; font-size: 12px; color: #a78bfa; text-transform: uppercase; letter-spacing: 0.5px;">⚡ Live Action Context</span>
+            <span id="kairo-panel-tag" style="background: #7c3aed; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600;">CHROMIUM VISUAL</span>
+          </div>
+          <div id="kairo-panel-body" style="font-size: 12px; line-height: 1.5; color: #cbd5e1;"></div>
+        </div>
+        <style>
+          @keyframes sr-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
+          @keyframes sr-highlight {
+            0% { outline: 3px solid transparent; }
+            50% { outline: 4px solid #7c3aed; outline-offset: 3px; box-shadow: 0 0 15px rgba(124,58,237,0.6); }
+          }
+          .sr-highlight { animation: sr-highlight 1.5s ease-in-out 3 !important; }
+        </style>
+      `);
+      const target = document.body || document.documentElement;
+      if (target) target.appendChild(overlay);
+    });
+  } catch { /* ignore navigation / CSP block errors */ }
 }
 
 export async function updateOverlayStatus(page, message, details = null) {
@@ -780,8 +808,23 @@ export async function updateOverlayStatus(page, message, details = null) {
       if (el) el.textContent = msg;
       const panel = document.getElementById('kairo-detail-panel');
       const body = document.getElementById('kairo-panel-body');
+
+      function safeSetHTML(container, htmlString) {
+        try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(htmlString, 'text/html');
+          const nodes = [
+            ...Array.from(doc.head ? doc.head.childNodes : []),
+            ...Array.from(doc.body ? doc.body.childNodes : [])
+          ];
+          container.replaceChildren(...nodes);
+        } catch {
+          try { container.textContent = htmlString.replace(/<[^>]*>/g, ''); } catch {}
+        }
+      }
+
       if (det && panel && body) {
-        body.innerHTML = det;
+        safeSetHTML(body, det);
         panel.style.display = 'block';
       } else if (!det && panel) {
         panel.style.display = 'none';

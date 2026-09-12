@@ -1090,8 +1090,10 @@ ${C.cyan}───────────────────────�
     }
   }
 
-  await injectOverlay(page);
-  await updateOverlayStatus(page, "🧠 KAIRO Planning & Auto-Filling...");
+  try {
+    await injectOverlay(page);
+    await updateOverlayStatus(page, "🧠 KAIRO Planning & Auto-Filling...");
+  } catch {}
 
   log("📋", "Planning workflow...", "cyan");
   narrate("Planning your workflow now.");
