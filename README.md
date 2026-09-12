@@ -222,7 +222,12 @@ OPENROUTER_API_KEY=your_openrouter_key
 node index.js
 ```
 
-### 4. Install Laptop Startup Listener (Optional)
+### 4. Create Windows Desktop Icon Shortcut (Optional)
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File create_desktop_shortcut.ps1
+```
+
+### 5. Install Laptop Startup Listener (Optional)
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File install_startup.ps1
 ```

@@ -62,16 +62,28 @@ export function checkVoiceAvailability() {
   return _voiceAvailable;
 }
 
-// ─── TTS: KAIRO Speaks (PowerShell EncodedCommand System.Speech Engine) ─
+function getVoiceConfig() {
+  const vp = loadVoiceProfile() || {};
+  return {
+    rate: vp.speech_rate ?? 0,          // -10 to +10
+    pitch: vp.speech_pitch || "-2st",   // -5st to +5st (e.g. -2st for smooth JARVIS tone)
+  };
+}
+
+// ─── TTS: KAIRO Speaks (PowerShell EncodedCommand SSML Voice Modulation) ─
 export function speak(text) {
   if (!_voiceAvailable) return;
   const cleaned = cleanForSpeech(text);
   if (!cleaned) return;
 
+  const cfg = getVoiceConfig();
+  const safeText = cleaned.replace(/["'$`<>]/g, " ").replace(/\s+/g, " ").trim();
+  if (!safeText) return;
+
   const psScript = `
 Add-Type -AssemblyName System.Speech;
 $s = New-Object System.Speech.Synthesis.SpeechSynthesizer;
-$s.Rate = 0;
+$s.Rate = ${cfg.rate};
 $s.Volume = 100;
 try {
     foreach ($v in $s.GetInstalledVoices()) {
@@ -82,7 +94,12 @@ try {
         }
     }
 } catch {}
-$s.Speak("${cleaned.replace(/"/g, '`"').replace(/\$/g, '`$')}");
+try {
+    $ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'><prosody rate='${cfg.rate >= 0 ? '+' : ''}${cfg.rate * 5}%' pitch='${cfg.pitch}'>${safeText}</prosody></speak>";
+    $s.SpeakSsml($ssml);
+} catch {
+    $s.Speak("${safeText}");
+}
 `.trim();
 
   const encCommand = Buffer.from(psScript, "utf16le").toString("base64");
@@ -93,16 +110,20 @@ $s.Speak("${cleaned.replace(/"/g, '`"').replace(/\$/g, '`$')}");
   } catch { /* silent fallback */ }
 }
 
-// Non-blocking speak (async fire-and-forget — zero terminal lag)
+// Non-blocking speak (async fire-and-forget — zero terminal lag with SSML voice modulation)
 export function speakAsync(text) {
   if (!_voiceAvailable) return;
   const cleaned = cleanForSpeech(text);
   if (!cleaned) return;
 
+  const cfg = getVoiceConfig();
+  const safeText = cleaned.replace(/["'$`<>]/g, " ").replace(/\s+/g, " ").trim();
+  if (!safeText) return;
+
   const psScript = `
 Add-Type -AssemblyName System.Speech;
 $s = New-Object System.Speech.Synthesis.SpeechSynthesizer;
-$s.Rate = 0;
+$s.Rate = ${cfg.rate};
 $s.Volume = 100;
 try {
     foreach ($v in $s.GetInstalledVoices()) {
@@ -113,7 +134,12 @@ try {
         }
     }
 } catch {}
-$s.Speak("${cleaned.replace(/"/g, '`"').replace(/\$/g, '`$')}");
+try {
+    $ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'><prosody rate='${cfg.rate >= 0 ? '+' : ''}${cfg.rate * 5}%' pitch='${cfg.pitch}'>${safeText}</prosody></speak>";
+    $s.SpeakSsml($ssml);
+} catch {
+    $s.Speak("${safeText}");
+}
 `.trim();
 
   const encCommand = Buffer.from(psScript, "utf16le").toString("base64");
@@ -585,6 +611,8 @@ export async function calibrateVoiceProfile() {
     calibrated_at: new Date().toISOString(),
     samples_count: capturedPhrases.length,
     user_speech_level: "calibrated",
+    speech_pitch: "-2st", // Smooth JARVIS male tone
+    speech_rate: 0,       // Calm, articulate pace
     phrases: capturedPhrases,
     custom_words: [
       "kairo", "kairos", "football", "amazon", "flipkart", "instacart", "blinkit", "zepto",
