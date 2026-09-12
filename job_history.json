@@ -1,51 +1,6 @@
 {
   "dailyTop5": [
     {
-      "id": "wellfound-linear-frontend-2026",
-      "title": "Frontend Engineer (React / UI Performance)",
-      "company": "Linear",
-      "location": "Remote (Global)",
-      "remote_type": "remote",
-      "salary_range": "$130,000 - $160,000 / year + Equity",
-      "experience_required": "2-4 years",
-      "requirements": [
-        "React",
-        "Next.js",
-        "TailwindCSS",
-        "State Management",
-        "UI Micro-animations"
-      ],
-      "responsibilities": [
-        "Craft lightning fast issue tracking UI",
-        "Build custom WebGL components"
-      ],
-      "posted_or_updated_date": "2026-09-10",
-      "application_deadline": "2026-09-30",
-      "num_applicants": 45,
-      "open_positions": 2,
-      "company_rating": 4.9,
-      "company_review_snippet": "Craft-obsessed team building world class developer tools.",
-      "application_url": "https://linear.app/careers",
-      "source": "Wellfound / AngelList",
-      "match_score": 55,
-      "match_breakdown": {
-        "skills_30": 25,
-        "title_20": 15,
-        "salary_15": 0,
-        "deadline_10": 10,
-        "rating_10": 10,
-        "freshness_10": 10,
-        "competition_5": 0
-      },
-      "why_suitable": "This role requires React and UI performance optimization, which align with your skills. The application deadline is soon, and the company has excellent reviews.",
-      "cover_letter_draft": "Dear Hiring Manager, I am excited to apply for the Frontend Engineer position at Linear. My expertise in React and UI performance optimization makes me a strong fit for this role. I am particularly drawn to Linear's focus on crafting world-class developer tools and would be thrilled to contribute to your team.",
-      "resume_bullet_rewrites": [
-        "Optimized UI performance for a high-traffic web application using React.",
-        "Developed custom WebGL components for enhanced user experience.",
-        "Implemented state management solutions for scalable frontend applications."
-      ]
-    },
-    {
       "id": "google-sw-eng-3-web-2026",
       "title": "Software Engineer III - Web Platform",
       "company": "Google",
@@ -74,22 +29,22 @@
       "company_review_snippet": "Exceptional benefits, smart peers, cutting-edge AI infrastructure.",
       "application_url": "https://careers.google.com",
       "source": "Company Career Page",
-      "match_score": 50,
+      "match_score": 60,
       "match_breakdown": {
-        "skills_30": 25,
-        "title_20": 15,
+        "skills_30": 20,
+        "title_20": 10,
         "salary_15": 0,
         "deadline_10": 5,
         "rating_10": 10,
-        "freshness_10": 10,
-        "competition_5": 0
+        "freshness_10": 8,
+        "competition_5": 7
       },
-      "why_suitable": "This role aligns with your skills in React, Python, and algorithms. However, the salary range exceeds your target, and the competition level is high.",
-      "cover_letter_draft": "Dear Hiring Manager, I am eager to apply for the Software Engineer III - Web Platform position at Google. My experience with React, Python, and algorithms makes me a strong candidate for this role. I am particularly excited about the opportunity to work on high-throughput web components and collaborate with a globally distributed team.",
+      "why_suitable": "This role aligns well with your skills in Python, React, and algorithms. The salary is above your target, but the role's requirements closely match your expertise.",
+      "cover_letter_draft": "Dear Hiring Team, I am thrilled to apply for the Software Engineer III position at Google. My proficiency in Python and React, combined with my experience in algorithm design, makes me a strong fit for your Web Platform team. I am eager to contribute to your high-performance web components and collaborate with your global team.",
       "resume_bullet_rewrites": [
-        "Developed high-performance web components using React and Python.",
-        "Optimized rendering pipelines for improved performance.",
-        "Collaborated with global teams to deliver scalable web solutions."
+        "Designed and implemented algorithms to optimize web application performance.",
+        "Developed web applications using React and Python, ensuring scalability and efficiency.",
+        "Collaborated on performance tuning projects to enhance user experience."
       ]
     },
     {
@@ -119,22 +74,68 @@
       "company_review_snippet": "Ship features to millions of developers every single day.",
       "application_url": "https://vercel.com/careers",
       "source": "Indeed",
+      "match_score": 55,
+      "match_breakdown": {
+        "skills_30": 20,
+        "title_20": 10,
+        "salary_15": 0,
+        "deadline_10": 8,
+        "rating_10": 10,
+        "freshness_10": 8,
+        "competition_5": 4
+      },
+      "why_suitable": "This role requires Node.js and TypeScript, which match your skills. The salary is above your target, but the role's focus on developer experience aligns well with your interests.",
+      "cover_letter_draft": "Dear Hiring Team, I am excited to apply for the Core Web Developer position at Vercel. My expertise in Node.js and TypeScript, combined with my passion for developer experience, makes me a strong fit for your DX Team. I am eager to contribute to your open-source projects and help improve Next.js for developers worldwide.",
+      "resume_bullet_rewrites": [
+        "Developed web applications using Node.js and TypeScript, focusing on performance and scalability.",
+        "Collaborated on open-source projects, contributing to developer experience improvements.",
+        "Implemented serverless solutions to enhance application efficiency."
+      ]
+    },
+    {
+      "id": "unstop-openai-agent-eng-2026",
+      "title": "AI Agent & Browser Automation Engineer",
+      "company": "OpenAI",
+      "location": "Remote / San Francisco, CA",
+      "remote_type": "remote",
+      "salary_range": "$180,000 - $240,000 / year",
+      "experience_required": "2-5 years",
+      "requirements": [
+        "LLM Orchestration",
+        "Playwright",
+        "Node.js",
+        "Python",
+        "Reinforcement Learning"
+      ],
+      "responsibilities": [
+        "Design autonomous AI agents",
+        "Build web browsing primitives",
+        "Optimize benchmark scores"
+      ],
+      "posted_or_updated_date": "2026-09-11",
+      "application_deadline": "2026-10-20",
+      "num_applicants": 62,
+      "open_positions": 4,
+      "company_rating": 4.9,
+      "company_review_snippet": "Pioneering AGI research environment with incredible talent density.",
+      "application_url": "https://openai.com/careers",
+      "source": "Unstop / OpenAI Careers",
       "match_score": 50,
       "match_breakdown": {
         "skills_30": 20,
-        "title_20": 15,
+        "title_20": 5,
         "salary_15": 0,
-        "deadline_10": 10,
+        "deadline_10": 5,
         "rating_10": 10,
-        "freshness_10": 10,
-        "competition_5": 0
+        "freshness_10": 8,
+        "competition_5": 2
       },
-      "why_suitable": "This role requires Node.js and Next.js, which align with your skills. The application deadline is soon, and the company has excellent reviews.",
-      "cover_letter_draft": "Dear Hiring Manager, I am excited to apply for the Core Web Developer - DX Team position at Vercel. My expertise in Node.js and Next.js makes me a strong fit for this role. I am particularly drawn to Vercel's mission to ship features to millions of developers and would be thrilled to contribute to your team.",
+      "why_suitable": "This role requires Python and Node.js, which match your skills. However, the salary is above your target, and the role focuses on AI and browser automation, which may not fully align with your experience.",
+      "cover_letter_draft": "Dear Hiring Team, I am excited to apply for the AI Agent & Browser Automation Engineer position at OpenAI. My expertise in Python and Node.js, combined with my interest in AI, makes me a strong candidate for this role. I am eager to contribute to your innovative projects and learn more about autonomous agents.",
       "resume_bullet_rewrites": [
-        "Improved Next.js developer experience through optimized code and documentation.",
-        "Maintained core framework open source projects with a focus on reliability.",
-        "Developed serverless and edge functions for scalable web applications."
+        "Developed applications using Python and Node.js, focusing on performance and scalability.",
+        "Collaborated on AI-related projects, exploring machine learning and automation.",
+        "Implemented web automation solutions to streamline workflows."
       ]
     },
     {
@@ -168,66 +169,65 @@
       "source": "LinkedIn Jobs",
       "match_score": 45,
       "match_breakdown": {
-        "skills_30": 20,
-        "title_20": 10,
+        "skills_30": 15,
+        "title_20": 5,
         "salary_15": 0,
         "deadline_10": 5,
         "rating_10": 10,
-        "freshness_10": 10,
-        "competition_5": 0
+        "freshness_10": 8,
+        "competition_5": 2
       },
-      "why_suitable": "This role requires JavaScript and React, which align with your skills. However, the salary range is significantly higher than your target, and the experience requirement may not match your background.",
-      "cover_letter_draft": "Dear Hiring Manager, I am excited to apply for the Senior Full Stack Engineer position at Stripe. With my expertise in JavaScript and React, I am confident in my ability to contribute to your team. I am particularly drawn to Stripe's innovative approach to payment solutions and would be thrilled to bring my skills to such a forward-thinking company.",
+      "why_suitable": "This role requires JavaScript and React, which match your skills. However, the salary is significantly higher than your target, and the role is more senior than your current experience level.",
+      "cover_letter_draft": "Dear Hiring Manager, I am excited to apply for the Senior Full Stack Engineer position at Stripe. With my expertise in JavaScript and React, I am confident in my ability to contribute to your team. While I may not meet all the seniority requirements, my passion for building scalable applications and my quick learning ability make me a strong candidate.",
       "resume_bullet_rewrites": [
-        "Developed scalable APIs using JavaScript and React.",
-        "Optimized frontend performance for a high-traffic web application.",
-        "Designed and implemented microservices architecture."
+        "Developed applications using JavaScript and React, ensuring high performance and scalability.",
+        "Collaborated on API design and implementation, focusing on efficiency and reliability.",
+        "Worked on frontend optimization projects to enhance user experience."
       ]
     },
     {
-      "id": "unstop-openai-agent-eng-2026",
-      "title": "AI Agent & Browser Automation Engineer",
-      "company": "OpenAI",
-      "location": "Remote / San Francisco, CA",
+      "id": "wellfound-linear-frontend-2026",
+      "title": "Frontend Engineer (React / UI Performance)",
+      "company": "Linear",
+      "location": "Remote (Global)",
       "remote_type": "remote",
-      "salary_range": "$180,000 - $240,000 / year",
-      "experience_required": "2-5 years",
+      "salary_range": "$130,000 - $160,000 / year + Equity",
+      "experience_required": "2-4 years",
       "requirements": [
-        "LLM Orchestration",
-        "Playwright",
-        "Node.js",
-        "Python",
-        "Reinforcement Learning"
+        "React",
+        "Next.js",
+        "TailwindCSS",
+        "State Management",
+        "UI Micro-animations"
       ],
       "responsibilities": [
-        "Design autonomous AI agents",
-        "Build web browsing primitives",
-        "Optimize benchmark scores"
+        "Craft lightning fast issue tracking UI",
+        "Build custom WebGL components"
       ],
-      "posted_or_updated_date": "2026-09-11",
-      "application_deadline": "2026-10-20",
-      "num_applicants": 62,
-      "open_positions": 4,
+      "posted_or_updated_date": "2026-09-10",
+      "application_deadline": "2026-09-30",
+      "num_applicants": 45,
+      "open_positions": 2,
       "company_rating": 4.9,
-      "company_review_snippet": "Pioneering AGI research environment with incredible talent density.",
-      "application_url": "https://openai.com/careers",
-      "source": "Unstop / OpenAI Careers",
+      "company_review_snippet": "Craft-obsessed team building world class developer tools.",
+      "application_url": "https://linear.app/careers",
+      "source": "Wellfound / AngelList",
       "match_score": 40,
       "match_breakdown": {
-        "skills_30": 20,
-        "title_20": 10,
+        "skills_30": 15,
+        "title_20": 5,
         "salary_15": 0,
-        "deadline_10": 5,
+        "deadline_10": 8,
         "rating_10": 10,
-        "freshness_10": 10,
-        "competition_5": 0
+        "freshness_10": 7,
+        "competition_5": 5
       },
-      "why_suitable": "This role requires Python and Node.js, which align with your skills. However, the salary range is significantly higher than your target, and the experience requirement may not match your background.",
-      "cover_letter_draft": "Dear Hiring Manager, I am excited to apply for the AI Agent & Browser Automation Engineer position at OpenAI. My expertise in Python and Node.js makes me a strong candidate for this role. I am particularly drawn to OpenAI's pioneering work in AGI research and would be thrilled to contribute to your team.",
+      "why_suitable": "This role requires React, which matches your skills, but the salary is significantly higher than your target. The role also focuses on UI performance, which may not fully align with your backend expertise.",
+      "cover_letter_draft": "Dear Hiring Manager, I am excited to apply for the Frontend Engineer position at Linear. My experience with React and state management aligns well with your requirements. I am particularly interested in contributing to your UI performance optimizations and crafting high-quality user interfaces.",
       "resume_bullet_rewrites": [
-        "Developed autonomous AI agents using Python and Node.js.",
-        "Optimized web browsing primitives for enhanced performance.",
-        "Implemented reinforcement learning algorithms for benchmark optimization."
+        "Built responsive web applications using React, focusing on performance and user experience.",
+        "Implemented state management solutions to ensure smooth application workflows.",
+        "Collaborated on UI design projects to enhance visual appeal and functionality."
       ]
     }
   ],
@@ -398,5 +398,5 @@
     "wellfound-linear-frontend-2026",
     "https://linear.app/careers"
   ],
-  "lastDailyDate": null
+  "lastDailyDate": "2026-09-12"
 }

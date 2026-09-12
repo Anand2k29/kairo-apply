@@ -363,15 +363,34 @@ ${J.cyan}╰──────────────────────�
   }
 
   console.log(`  ${J.bright}Dashboard Actions:${J.reset}`);
-  console.log(`   ${J.cyan}[1-5]${J.reset} : Select job to view AI Cover Letter & Stage Live Application`);
+  console.log(`   ${J.green}${J.bright}[1-5]${J.reset} : ${J.bright}🚀 Open Live Chromium Browser → Navigate to Career Page & Auto-Apply${J.reset}`);
+  console.log(`   ${J.green}${J.bright}[ V ]${J.reset} : ${J.bright}🌐 Visual Apply ALL Top 5 → Open Browser for All Career Pages${J.reset}`);
+  console.log(`   ${J.cyan}[ D ]${J.reset} : View detailed AI Cover Letter & Resume Bullets for a job`);
   console.log(`   ${J.cyan}[ S ]${J.reset} : Save selected job match to saved list`);
   console.log(`   ${J.cyan}[ R ]${J.reset} : Refresh search target title & location`);
   console.log(`   ${J.cyan}[ M ]${J.reset} : Return to Main Menu\n`);
 
-  const choice = await askInput(`  ${J.bright}Enter choice (1-5, S, R, M):${J.reset} `);
+  const choice = await askInput(`  ${J.bright}Enter choice (1-5, V, D, S, R, M):${J.reset} `);
   const choiceUpper = choice.toUpperCase();
 
-  // Support single digit (1-5) or ranges like 1-4, 1-3, 1,2,3
+  // Helper: build a browser goal for selected jobs
+  function buildBrowserGoal(selectedJobs) {
+    const profStr = `${profile.name || "Candidate"}, ${profile.email || "email@example.com"}`;
+    const jobDescriptions = selectedJobs.map(j => `"${j.title}" at ${j.company} (${j.application_url})`).join(", ");
+    return {
+      action: "AUTO_APPLY_JOB_BATCH",
+      job: selectedJobs[0],
+      goal: `Navigate to ${selectedJobs[0].application_url}. Open job application pages for ${jobDescriptions}, fill contact information using candidate profile (${profStr}), paste tailored cover letters, and PAUSE BEFORE SUBMITTING to ask user for explicit confirmation.`,
+    };
+  }
+
+  // [V] Visual Apply ALL top 5 → immediate browser launch
+  if (choiceUpper === "V") {
+    console.log(`\n  ${J.green}${J.bright}🚀 Opening Live Chromium Browser for ALL Top 5 career pages...${J.reset}\n`);
+    return buildBrowserGoal(top5);
+  }
+
+  // Support single digit (1-5), ranges like 1-4, or comma lists like 1,3,5
   let selectedIndices = [];
   const rangeMatch = choice.match(/^(\d)-(\d)$/);
   if (rangeMatch) {
@@ -388,19 +407,21 @@ ${J.cyan}╰──────────────────────�
     selectedIndices = [parseInt(choice.trim()) - 1];
   }
 
+  // [1-5] → Directly launch browser for selected job(s) (NO intermediate menu)
   if (selectedIndices.length > 0) {
-    if (selectedIndices.length === 1) {
-      const selectedJob = top5[selectedIndices[0]];
-      return await handleJobSelection(selectedJob);
-    }
-    // Multiple jobs selected (e.g. 1-4)
     const selectedJobs = selectedIndices.map(i => top5[i]);
-    const firstJob = selectedJobs[0];
-    return {
-      action: "AUTO_APPLY_JOB_BATCH",
-      job: firstJob,
-      goal: `Navigate to ${firstJob.application_url}. Open job application pages for ${selectedJobs.map(j => `"${j.title}" at ${j.company} (${j.application_url})`).join(", ")}, fill contact information using candidate profile (${profile.name || "Candidate"}, ${profile.email || "email@example.com"}), paste tailored cover letters, and PAUSE BEFORE SUBMITTING to ask user for explicit confirmation.`,
-    };
+    console.log(`\n  ${J.green}${J.bright}🚀 Opening Live Chromium Browser → ${selectedJobs.map(j => j.company).join(", ")} Career Page(s)...${J.reset}\n`);
+    return buildBrowserGoal(selectedJobs);
+  }
+
+  // [D] Detailed view with cover letter and resume bullets (the old handleJobSelection)
+  if (choiceUpper === "D") {
+    const detailIdx = await askInput(`  ${J.yellow}Which job number to view details? (1-5):${J.reset} `);
+    const sel = top5[parseInt(detailIdx) - 1];
+    if (sel) {
+      return await handleJobSelection(sel);
+    }
+    return await renderJobDashboard();
   }
 
   if (choiceUpper === "S") {
@@ -412,7 +433,7 @@ ${J.cyan}╰──────────────────────�
       saveJobHistory(history);
       console.log(`  ${J.green}✅ Saved "${sel.title}" at ${sel.company}!${J.reset}`);
     }
-    return renderJobDashboard();
+    return await renderJobDashboard();
   }
 
   if (choiceUpper === "R") {
