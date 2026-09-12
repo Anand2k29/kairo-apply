@@ -5,7 +5,7 @@
 > **GitHub Repository**: [https://github.com/Anand2k29/kairo-apply](https://github.com/Anand2k29/kairo-apply)
 > Powered by **webcmd** architecture & **KAIRO (Kairos Opportune Timing Assistant — JARVIS Voice Persona)** — *"Hello KAIRO"*
 
-**KAIRO** (`kairo-apply`) — evoking *Kairos* (the right, opportune moment for job applications and execution) — is a state-of-the-art autonomous browser agent built on the **webcmd** autonomous web automation engine. It combines JARVIS voice-activated AI (**KAIRO**), multi-tier LLM waterfalls (**Ollama** + **claude-code-for-free** + **Gemini** + **OpenRouter**), an RL Q-value trajectory cache, an AI Job Discovery Assistant with the **PS11 9-Stage Prompt Library & Fact-Checking Pipeline**, and live visual Playwright Chromium browser execution.
+**KAIRO** (`kairo-apply`) — evoking *Kairos* (the right, opportune moment for job applications and execution) — is a state-of-the-art autonomous browser agent built on the **webcmd** autonomous web automation engine. It combines JARVIS voice-activated AI (**KAIRO**), multi-tier LLM waterfalls (**Ollama** + **claude-code-for-free** + **Gemini** + **OpenRouter** + **Free Models Cascade**), an RL Q-value trajectory cache, an AI Job Discovery Assistant with the **9-Stage Resume Tailoring & Fact-Checking Pipeline**, and live visual Playwright Chromium browser execution.
 
 ---
 
@@ -17,22 +17,59 @@ Navigating the web for daily repetitive actions — such as scouring job portals
 ### ⚙️ How We Went About It
 We built **kairo-apply** on top of the **webcmd** autonomous web architecture and **KAIRO (JARVIS Voice Persona)**:
 1. **Continuous Voice Engine (KAIRO - JARVIS Persona)**: Listens asynchronously for *"Hello KAIRO"* or **3x rapid spacebar taps** globally on Windows to launch voice-guided browser automation with a smooth, suave male voice.
-2. **PS11 9-Stage Prompt Library & Fact-Checking Guardrail**: 9 model-agnostic prompt templates (`1_jd_parser.txt` through `9_change_report.txt`) ensuring non-fabrication of candidate evidence and full audit logging (`run_trace.json`).
+2. **9-Stage Prompt Library & Fact-Checking Guardrail**: 9 model-agnostic prompt templates (`1_jd_parser.txt` through `9_change_report.txt`) ensuring non-fabrication of candidate evidence and full audit logging (`run_trace.json`).
 3. **Fuzzy Q-Cache Trajectory Engine**: Uses Reinforcement Learning Q-values (`workflow_memory.json`) to cache successful browser paths. Subsequent runs execute at sub-200ms Playwright DOM speed using **0 LLM Tokens**, with intelligent entity validation and dynamic parameter substitution so queries (*e.g., milk vs. eggs*) never collide.
-4. **Multi-Tier LLM Waterfall**: Cascades seamlessly from Local Claude (`claude-code-for-free`) → Local Ollama (`llama3.2`) → Gemini API → OpenRouter → Zero-API DOM Heuristics.
+4. **Multi-Tier Rate-Limit-Resistant LLM Waterfall**: Cascades seamlessly from Local Claude (`claude-code-for-free`) → Local Ollama (`llama3.2`) → Gemini API → OpenRouter Free Models → Zero-API DOM Heuristics with exponential backoff & 0-token local fallback JSONs.
 5. **Human-Gated Safety**: Section 9 hard gate ensures KAIRO never submits applications or completes payments without explicit human confirmation.
 
 ### 🌟 Featured Highlights (Primary Capabilities)
 
 > [!IMPORTANT]
-> **💼 OPTION 3 — AI Job Discovery & PS11 Prompt Library Pipeline**
-> Features an autonomous 17-field job discovery schema, 7-signal weighted match matrix (0-100 score), and the 9-Stage PS11 Prompt Library Pipeline (`tailor → evaluate → revise → send`) with fact-checking guardrails. Supports batch auto-apply (`1-4`, `1-5`) with human-gated confirmation before submission.
+> **💼 AI Job Discovery & 9-Stage Resume Tailoring Pipeline**
+> Features an autonomous 17-field job discovery schema, 7-signal weighted match matrix (0-100 score), and the 9-Stage Prompt Library Pipeline (`tailor → evaluate → revise → send`) with fact-checking guardrails. Supports batch auto-apply (`1-4`, `1-5`) with human-gated confirmation before submission.
 
 > [!IMPORTANT]
 > **📧 Recruiter Emailing & Application Dispatch (No Firebase Keys Required)**
 > KAIRO supports dual email dispatch options out of the box:
 > 1. **Live Browser Webmail (Default — 0 Keys Needed)**: Uses Playwright Chromium to open Gmail at `https://mail.google.com`, click Compose, fill recipient, subject, and cover letter body, pausing for human handoff.
 > 2. **Direct SMTP Nodemailer (Optional Background Dispatch)**: Add `SMTP_USER` & `SMTP_PASS` (e.g. Gmail App Password) to `.env` for direct background email sending with tailored resume payloads.
+
+---
+
+## 🎨 Categorized & Tailored CLI Options Menu
+
+KAIRO features an aligned, color-coded, and intuitive terminal menu layout:
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│  🤖  K A I R O  —  Autonomous Resume & Job Application Agent             │
+│  Precision Timing (Kairos) • 9-Stage Tailoring • Fact-Checked Guardrails │
+└──────────────────────────────────────────────────────────────────────────┘
+
+  🎯 TAILORED AGENT OPTIONS & WORKFLOWS:
+
+  ─── 💼 JOB DISCOVERY & RESUME TAILORING ───────────────────────────────────
+   1  💼  Job Discovery & Daily Top 5 Dashboard
+     ↳ 17-field schema, 7-Signal match score & live visual browser discovery
+   2  🤖  9-Stage Resume Tailoring Pipeline
+     ↳ Non-fabrication resume draft, ATS score (0-100) & audit change report
+   3  📧  Recruiter Outreach & Cold Mailing Assistant
+     ↳ Live Playwright webmail draft composition & direct SMTP email dispatch
+
+  ─── 👤 CANDIDATE PROFILE & VOICE ASSISTANT ────────────────────────────────
+   4  👤  Candidate Profile & Verified Evidence Setup
+     ↳ Candidate skills, experience years, verified projects & contact info
+   5  🎤  KAIRO JARVIS Hands-Free Voice Mode
+     ↳ Activate "Hello KAIRO" wake-word or tap 3x Spacebar for voice control
+   6  🎙️  JARVIS Voice Acoustic Calibration
+     ↳ Calibrate pitch, speech rate & acoustic voice profile
+
+  ─── ⚡ AUTOMATION & REPLAY ENGINE ──────────────────────────────────────────
+   7  ⚡  Custom Task / General Webcmd Workflow
+     ↳ Execute any custom browser automation goal with live visual playback
+   8  🔄  Replay Learned Workflow
+     ↳ Sub-200ms DOM replay engine (0 LLM tokens consumed)
+```
 
 ---
 
@@ -56,9 +93,9 @@ KAIRO leverages **webcmd** (`webcmd_repo`) as its core execution engine:
  │                         🌊 Multi-Tier LLM Waterfall                      │
  │ Tier 1: Local Claude Proxy (claude-code-for-free @ http://127.0.0.1:3000)│
  │ Tier 1B: Local Ollama Model (llama3.2 / qwen2.5 @ http://127.0.0.1:11434) │
- │ Tier 2: Gemini API Keys × Round-Robin Models                            │
- │ Tier 3: OpenRouter Fallback Models                                       │
- │ Tier 4: Zero-API Smart DOM Heuristic Fallback                           │
+ │ Tier 2: Gemini API Keys × Round-Robin Models (Exponential Backoff)       │
+ │ Tier 3: OpenRouter Free Models Cascade (Llama 3.3, DeepSeek, Gemini Lite)│
+ │ Tier 4: Zero-API Smart DOM Heuristics & Local Fallback JSONs             │
  └─────────────────────────────────────┬────────────────────────────────────┘
                                        │
                                        ▼
@@ -89,15 +126,15 @@ KAIRO leverages **webcmd** (`webcmd_repo`) as its core execution engine:
 | 🛠️ **Powered by webcmd** | Autonomous DOM action primitives, atomic step execution, and trajectory recording |
 | 🎤 **KAIRO Voice Assistant** | Say **"Hello KAIRO"** or tap **3x Spacebar** anywhere on Windows to activate |
 | 🎙️ **JARVIS Smooth Male Voice** | Suave, articulate male voice synthesizer via Windows SAPI with speech rate tuning |
-| 📜 **PS11 9-Stage Prompt Library** | `prompts/1_jd_parser.txt` through `9_change_report.txt` with non-fabrication guardrail |
+| 📜 **9-Stage Prompt Library** | `prompts/1_jd_parser.txt` through `9_change_report.txt` with non-fabrication guardrail |
 | 💼 **Job Discovery & Auto-Apply** | 17-field job schema, 7-signal weighted match score (0-100), AI cover letters |
 | ⚡ **Ultra-Low Latency Engine** | Sub-10s to 15s end-to-end task execution latency via fast-path DOM heuristics & 50ms step delays |
-| 🌐 **Live Browser Dual-Interface** | Plays visually inside Playwright Chromium window with purple status overlay |
+| 🌐 **Live Browser Dual-Interface** | Plays visually inside Playwright Chromium window with status overlay bar |
 | 🛡️ **Human-Gated Handoff** | Hard-gated user confirmation before submitting any application or payment |
 
 ---
 
-## 📜 PS11 — Resume & Application Agent: Prompt Library & Pipeline
+## 📜 Resume & Application Agent: 9-Stage Pipeline
 
 Modular, model-agnostic prompt library (`prompts/`) executing a 9-stage pipeline with strict non-fabrication guardrails, parallel stages, iterative revision, and audit logging:
 
@@ -126,27 +163,27 @@ Modular, model-agnostic prompt library (`prompts/`) executing a 9-stage pipeline
 
 ---
 
-## 🌊 Multi-Tier LLM Waterfall
+## 🌊 Multi-Tier LLM Waterfall & Rate-Limit Engine
 
 ```env
-Tier 1: Gemini API Keys (Multi-Key Round-Robin & Per-Model Cooldown Rotation)
-  ↓ (6s timeout / automatic HTTP 429 key cooldown handling)
-Tier 2: OpenRouter API Cascade (DeepSeek Chat/R1, Gemini 2.0 Flash, Llama 3.3 70B, Qwen 2.5)
+Tier 1: Gemini API Keys (Multi-Key Round-Robin & Exponential Backoff Retries on HTTP 429)
+  ↓ (auto retry up to 3x with 1.2s-2.4s backoff before key cooldown)
+Tier 2: OpenRouter Free Models Cascade (Gemini Lite, Llama 3.3 70B, DeepSeek R1, Qwen 2.5)
   ↓ (automatic key cooldown & retry-after header parsing)
 Tier 3: Local Claude Proxy (claude-code-for-free @ http://127.0.0.1:3000/api — 100% free)
   ↓ (1.2s ultra-fast local timeout)
 Tier 4: Local Ollama Model (llama3.2 / qwen2.5 @ http://127.0.0.1:11434 — 100% offline)
   ↓ (if all AI APIs rate-limited or internet offline)
-Tier 5: Zero-API Smart DOM Heuristics (0 Tokens Used • sub-15ms Playwright execution)
+Tier 5: Zero-API Smart DOM Heuristics & Local Fallback JSONs (0 Tokens Used • sub-15ms Playwright execution)
 ```
 
 ### 🌟 What Makes KAIRO's Waterfall Model Unique & Differentiating?
 
 1. **🛡️ 100% Guaranteed Uptime (Zero Single Point of Failure)**
-   Unlike standard AI agents that crash or halt when cloud API rate limits (HTTP 429) occur, KAIRO cascades seamlessly across 5 distinct execution layers. Even if internet connection is completely severed, KAIRO automatically shifts to Tier 5 Smart DOM Heuristics and keeps automating.
+   Unlike standard AI agents that crash or halt when cloud API rate limits (HTTP 429) occur, KAIRO cascades seamlessly across 5 distinct execution layers. Even if internet connection is completely severed or quota is exhausted, KAIRO automatically shifts to Tier 5 Smart DOM Heuristics & Local Fallback JSONs and keeps automating.
 
 2. **⏳ Dynamic Per-Key Cooldown Tracker**
-   Parses `retry-after` HTTP response headers and error messages in real time. Exhausted API keys are silently quarantined for 30–45s while active keys continue executing without interrupting the user's turn.
+   Parses `retry-after` HTTP response headers and error messages in real time. Exhausted API keys are silently quarantined for 20–30s while active keys continue executing without interrupting the user's turn.
 
 3. **🔒 Local Privacy-Preserving Hybrid Processing**
    Allows sensitive candidate credentials, profiles, or internal documents to be processed on local Ollama or Claude instances (Tier 3/4) without sending raw data to external third-party cloud servers.
@@ -199,7 +236,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File install_startup.ps1
 | `webcmd_repo/` | Core **webcmd** autonomous browser command surface & Playwright runtime |
 | `index.js` | Main agent — menu dispatcher, planner, browser launcher, Q-cache replay |
 | `jobs.js` | Job Discovery Agent — 17-field schema, 7-signal match matrix, dashboard |
-| `prompts/` | **PS11 Prompt Library** — 9 model-agnostic templates (`1_jd_parser` to `9_change_report`) |
+| `prompts/` | **Prompt Library** — 9 model-agnostic templates (`1_jd_parser` to `9_change_report`) |
 | `prompts/pipeline.js` | 9-Stage pipeline orchestrator & fact-checker revision loop |
 | `prompts/demo.js` | Standalone verification script for deliberate failure guardrail test |
 | `voice.js` | **KAIRO** — JARVIS smooth male voice engine, SAPI TTS, Ollama intent refiner |
@@ -223,3 +260,4 @@ powershell -NoProfile -ExecutionPolicy Bypass -File install_startup.ps1
 ## 📜 License
 
 MIT
+
