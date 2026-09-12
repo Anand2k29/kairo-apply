@@ -129,16 +129,30 @@ Modular, model-agnostic prompt library (`prompts/`) executing a 9-stage pipeline
 ## 🌊 Multi-Tier LLM Waterfall
 
 ```env
-Tier 1: Gemini API Keys (direct Google API models)
-  ↓ (6s timeout / key cooldown rotation)
-Tier 2: OpenRouter API Keys (15+ free tier models cascade: Gemini, DeepSeek, Llama 3.3, Qwen 2.5, Mistral)
-  ↓ (key cooldown map)
-Tier 3: Local Claude Proxy (claude-code-for-free @ http://127.0.0.1:3000/api)
-  ↓ (1.2s fast timeout)
-Tier 4: Local Ollama Model (llama3.2 @ http://127.0.0.1:11434)
-  ↓ (if all LLMs exhausted/offline)
-Tier 5: Zero-API Smart DOM Heuristics (0 Tokens Used • sub-15ms execution)
+Tier 1: Gemini API Keys (Multi-Key Round-Robin & Per-Model Cooldown Rotation)
+  ↓ (6s timeout / automatic HTTP 429 key cooldown handling)
+Tier 2: OpenRouter API Cascade (DeepSeek Chat/R1, Gemini 2.0 Flash, Llama 3.3 70B, Qwen 2.5)
+  ↓ (automatic key cooldown & retry-after header parsing)
+Tier 3: Local Claude Proxy (claude-code-for-free @ http://127.0.0.1:3000/api — 100% free)
+  ↓ (1.2s ultra-fast local timeout)
+Tier 4: Local Ollama Model (llama3.2 / qwen2.5 @ http://127.0.0.1:11434 — 100% offline)
+  ↓ (if all AI APIs rate-limited or internet offline)
+Tier 5: Zero-API Smart DOM Heuristics (0 Tokens Used • sub-15ms Playwright execution)
 ```
+
+### 🌟 What Makes KAIRO's Waterfall Model Unique & Differentiating?
+
+1. **🛡️ 100% Guaranteed Uptime (Zero Single Point of Failure)**
+   Unlike standard AI agents that crash or halt when cloud API rate limits (HTTP 429) occur, KAIRO cascades seamlessly across 5 distinct execution layers. Even if internet connection is completely severed, KAIRO automatically shifts to Tier 5 Smart DOM Heuristics and keeps automating.
+
+2. **⏳ Dynamic Per-Key Cooldown Tracker**
+   Parses `retry-after` HTTP response headers and error messages in real time. Exhausted API keys are silently quarantined for 30–45s while active keys continue executing without interrupting the user's turn.
+
+3. **🔒 Local Privacy-Preserving Hybrid Processing**
+   Allows sensitive candidate credentials, profiles, or internal documents to be processed on local Ollama or Claude instances (Tier 3/4) without sending raw data to external third-party cloud servers.
+
+4. **⚡ Synergy with Token-Zero Trajectory Memory**
+   When paired with KAIRO's Reinforcement Learning Q-Cache (`workflow_memory.json`), once a web path is successfully executed, the Waterfall Engine is bypassed entirely on subsequent runs, executing at sub-200ms DOM speed using **0 LLM Tokens**.
 
 ---
 

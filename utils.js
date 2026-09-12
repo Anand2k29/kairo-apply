@@ -55,24 +55,16 @@ function getOpenRouterKeys() {
   ].filter(Boolean);
 }
 
-// OpenRouter models to try in order (Free tier models & fast models prioritized)
+// OpenRouter models to try in order (active high-speed models prioritized)
 const OPENROUTER_MODELS = [
-  "google/gemini-2.0-flash-exp:free",
-  "google/gemini-flash-1.5-8b:free",
-  "google/gemini-2.0-pro-exp-02-05:free",
-  "deepseek/deepseek-r1:free",
-  "deepseek/deepseek-chat:free",
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "meta-llama/llama-3.1-8b-instruct:free",
-  "meta-llama/llama-3-8b-instruct:free",
-  "qwen/qwen-2.5-7b-instruct:free",
-  "qwen/qwen-2-7b-instruct:free",
-  "mistralai/mistral-7b-instruct:free",
-  "openchat/openchat-7b:free",
-  "microsoft/phi-3-medium-128k-instruct:free",
-  "huggingfaceh4/zephyr-7b-beta:free",
   "deepseek/deepseek-chat",
+  "google/gemini-2.0-flash-001",
+  "meta-llama/llama-3.3-70b-instruct",
+  "qwen/qwen-2.5-7b-instruct",
   "deepseek/deepseek-r1-distill-llama-70b",
+  "mistralai/mistral-7b-instruct",
+  "google/gemini-flash-1.5",
+  "microsoft/phi-3-medium-128k-instruct",
 ];
 
 // Gemini models to cycle through per key (active & reliable endpoints)
