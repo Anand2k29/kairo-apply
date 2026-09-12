@@ -735,12 +735,11 @@ export async function injectOverlay(page) {
         @keyframes sr-highlight {
           0% { outline: 3px solid transparent; }
           50% { outline: 3px solid #7c3aed; outline-offset: 2px; }
-          100% { outline: 3px solid transparent; }
-        }
         .sr-highlight { animation: sr-highlight 1.5s ease-in-out 3; }
-      const target = document.body || document.documentElement;
-      if (target) target.appendChild(overlay);
-    } catch {}
+      </style>
+    `;
+    const target = document.body || document.documentElement;
+    if (target) target.appendChild(overlay);
   });
 }
 
