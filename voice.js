@@ -96,14 +96,16 @@ $s = New-Object System.Speech.Synthesis.SpeechSynthesizer;
 $s.Rate = ${cfg.rate};
 $s.Volume = 100;
 try {
+    $s.SelectVoiceByHints([System.Speech.Synthesis.VoiceGender]::Female, [System.Speech.Synthesis.VoiceAge]::Adult);
+} catch {
     foreach ($v in $s.GetInstalledVoices()) {
         $n = $v.VoiceInfo.Name.ToLower();
-        if ($n.Contains("zira") -or $n.Contains("hazel") -or $n.Contains("eva") -or $n.Contains("catherine") -or $n.Contains("susan") -or $n.Contains("heera") -or $v.VoiceInfo.Gender -eq [System.Speech.Synthesis.VoiceGender]::Female) {
+        if ($n.Contains("zira") -or $n.Contains("hazel") -or $n.Contains("eva") -or $v.VoiceInfo.Gender -eq [System.Speech.Synthesis.VoiceGender]::Female) {
             $s.SelectVoice($v.VoiceInfo.Name);
             break;
         }
     }
-} catch {}
+}
 try {
     $ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'><prosody rate='${cfg.ratePercent}' pitch='${cfg.pitch}'>${safeText}</prosody></speak>";
     $s.SpeakSsml($ssml);
@@ -136,14 +138,16 @@ $s = New-Object System.Speech.Synthesis.SpeechSynthesizer;
 $s.Rate = ${cfg.rate};
 $s.Volume = 100;
 try {
+    $s.SelectVoiceByHints([System.Speech.Synthesis.VoiceGender]::Female, [System.Speech.Synthesis.VoiceAge]::Adult);
+} catch {
     foreach ($v in $s.GetInstalledVoices()) {
         $n = $v.VoiceInfo.Name.ToLower();
-        if ($n.Contains("zira") -or $n.Contains("hazel") -or $n.Contains("eva") -or $n.Contains("catherine") -or $n.Contains("susan") -or $n.Contains("heera") -or $v.VoiceInfo.Gender -eq [System.Speech.Synthesis.VoiceGender]::Female) {
+        if ($n.Contains("zira") -or $n.Contains("hazel") -or $n.Contains("eva") -or $v.VoiceInfo.Gender -eq [System.Speech.Synthesis.VoiceGender]::Female) {
             $s.SelectVoice($v.VoiceInfo.Name);
             break;
         }
     }
-} catch {}
+}
 try {
     $ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'><prosody rate='${cfg.ratePercent}' pitch='${cfg.pitch}'>${safeText}</prosody></speak>";
     $s.SpeakSsml($ssml);
