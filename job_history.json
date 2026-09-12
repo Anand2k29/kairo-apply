@@ -1,0 +1,167 @@
+{
+  "dailyTop5": [
+    {
+      "id": "linkedin-stripe-sr-fullstack-2026",
+      "title": "Senior Full Stack Engineer (Node.js & React)",
+      "company": "Stripe",
+      "location": "Remote / San Francisco, CA",
+      "remote_type": "remote",
+      "salary_range": "$145,000 - $185,000 / year",
+      "experience_required": "2-5 years",
+      "requirements": [
+        "JavaScript",
+        "TypeScript",
+        "Node.js",
+        "React",
+        "API Architecture",
+        "Distributed Systems"
+      ],
+      "responsibilities": [
+        "Build scalable payment APIs",
+        "Optimize frontend dashboard performance",
+        "Design microservices"
+      ],
+      "posted_or_updated_date": "2026-09-11",
+      "application_deadline": "2026-10-15",
+      "num_applicants": 28,
+      "open_positions": 3,
+      "company_rating": 4.8,
+      "company_review_snippet": "Top tier engineering culture with high autonomy and modern stack.",
+      "application_url": "https://stripe.com/jobs",
+      "source": "LinkedIn Jobs"
+    },
+    {
+      "id": "google-sw-eng-3-web-2026",
+      "title": "Software Engineer III - Web Platform",
+      "company": "Google",
+      "location": "Bangalore, India / Remote",
+      "remote_type": "hybrid",
+      "salary_range": "₹28,000,000 - ₹42,000,000 / year ($120k+)",
+      "experience_required": "1-4 years",
+      "requirements": [
+        "Algorithms",
+        "Web APIs",
+        "React",
+        "Python",
+        "Node.js",
+        "Performance Tuning"
+      ],
+      "responsibilities": [
+        "Develop high-throughput web components",
+        "Optimize rendering pipeline",
+        "Collaborate globally"
+      ],
+      "posted_or_updated_date": "2026-09-12",
+      "application_deadline": "2026-10-30",
+      "num_applicants": 114,
+      "open_positions": 5,
+      "company_rating": 4.7,
+      "company_review_snippet": "Exceptional benefits, smart peers, cutting-edge AI infrastructure.",
+      "application_url": "https://careers.google.com",
+      "source": "Company Career Page"
+    },
+    {
+      "id": "wellfound-linear-frontend-2026",
+      "title": "Frontend Engineer (React / UI Performance)",
+      "company": "Linear",
+      "location": "Remote (Global)",
+      "remote_type": "remote",
+      "salary_range": "$130,000 - $160,000 / year + Equity",
+      "experience_required": "2-4 years",
+      "requirements": [
+        "React",
+        "Next.js",
+        "TailwindCSS",
+        "State Management",
+        "UI Micro-animations"
+      ],
+      "responsibilities": [
+        "Craft lightning fast issue tracking UI",
+        "Build custom WebGL components"
+      ],
+      "posted_or_updated_date": "2026-09-10",
+      "application_deadline": "2026-09-30",
+      "num_applicants": 45,
+      "open_positions": 2,
+      "company_rating": 4.9,
+      "company_review_snippet": "Craft-obsessed team building world class developer tools.",
+      "application_url": "https://linear.app/careers",
+      "source": "Wellfound / AngelList"
+    },
+    {
+      "id": "unstop-openai-agent-eng-2026",
+      "title": "AI Agent & Browser Automation Engineer",
+      "company": "OpenAI",
+      "location": "Remote / San Francisco, CA",
+      "remote_type": "remote",
+      "salary_range": "$180,000 - $240,000 / year",
+      "experience_required": "2-5 years",
+      "requirements": [
+        "LLM Orchestration",
+        "Playwright",
+        "Node.js",
+        "Python",
+        "Reinforcement Learning"
+      ],
+      "responsibilities": [
+        "Design autonomous AI agents",
+        "Build web browsing primitives",
+        "Optimize benchmark scores"
+      ],
+      "posted_or_updated_date": "2026-09-11",
+      "application_deadline": "2026-10-20",
+      "num_applicants": 62,
+      "open_positions": 4,
+      "company_rating": 4.9,
+      "company_review_snippet": "Pioneering AGI research environment with incredible talent density.",
+      "application_url": "https://openai.com/careers",
+      "source": "Unstop / OpenAI Careers"
+    },
+    {
+      "id": "naukri-microsoft-cloud-2026",
+      "title": "Cloud & Backend Software Engineer",
+      "company": "Microsoft",
+      "location": "Hyderabad, India / Remote",
+      "remote_type": "hybrid",
+      "salary_range": "₹24,000,000 - ₹35,000,000 / year",
+      "experience_required": "2-4 years",
+      "requirements": [
+        "Node.js",
+        "C# / .NET",
+        "Azure",
+        "Distributed Databases",
+        "Microservices"
+      ],
+      "responsibilities": [
+        "Scale cloud services",
+        "Improve backend reliability",
+        "Write resilient async code"
+      ],
+      "posted_or_updated_date": "2026-09-09",
+      "application_deadline": "2026-10-10",
+      "num_applicants": 89,
+      "open_positions": 6,
+      "company_rating": 4.6,
+      "company_review_snippet": "Great work-life balance and strong career growth support.",
+      "application_url": "https://careers.microsoft.com",
+      "source": "Naukri"
+    }
+  ],
+  "savedJobs": [],
+  "appliedJobs": [],
+  "seenJobIds": [
+    "google-sw-eng-3-web-2026",
+    "naukri-microsoft-cloud-2026",
+    "unstop-openai-agent-eng-2026",
+    "linkedin-stripe-sr-fullstack-2026",
+    "indeed-vercel-nextjs-2026",
+    "https://careers.google.com",
+    "https://careers.microsoft.com",
+    "https://openai.com/careers",
+    "https://stripe.com/jobs",
+    "https://vercel.com/careers",
+    "wellfound-linear-frontend-2026",
+    "https://linear.app/careers"
+  ],
+  "lastDailyDate": "2026-09-12"
+}

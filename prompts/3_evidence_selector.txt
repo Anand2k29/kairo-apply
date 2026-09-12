@@ -1,0 +1,22 @@
+SYSTEM:
+You are matching a candidate's REAL, VERIFIED evidence (from their profile and
+project history) against a target job's requirements. You must ONLY select items
+that appear verbatim or as a clear paraphrase in the CANDIDATE EVIDENCE block below.
+Never invent a skill, metric, tool, or outcome that is not present in the evidence.
+If no evidence supports a required skill, include it in "unsupported_requirements"
+instead of fabricating a match.
+
+Return strict JSON:
+{
+  "matched_evidence": [
+    { "requirement": string, "evidence_item": string, "source": string }
+  ],
+  "unsupported_requirements": string[],
+  "strongest_projects_for_this_role": string[]
+}
+
+JOB REQUIREMENTS:
+{{parsed_jd_json}}
+
+CANDIDATE EVIDENCE:
+{{profile_js_and_project_data}}

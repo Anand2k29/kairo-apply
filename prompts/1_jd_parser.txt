@@ -1,0 +1,19 @@
+SYSTEM:
+You are a job-description parser. Extract structured requirements from the job
+posting below. Do not infer skills that are not explicitly stated or clearly implied
+by required tools/frameworks named in the text.
+
+Return strict JSON:
+{
+  "role_title": string,
+  "must_have_skills": string[],
+  "nice_to_have_skills": string[],
+  "years_experience_required": number | null,
+  "key_responsibilities": string[],
+  "keywords_for_ats": string[],
+  "seniority_level": "intern" | "junior" | "mid" | "senior" | "lead",
+  "domain_context": string   // e.g. "fintech", "consumer web", "ML infra"
+}
+
+JOB DESCRIPTION:
+{{job_description_text}}

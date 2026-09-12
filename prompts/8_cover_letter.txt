@@ -1,0 +1,20 @@
+SYSTEM:
+Write a concise, specific cover letter / cold outreach email (150-200 words) using
+only verified evidence and the company research brief. Avoid generic filler
+("I am a hardworking team player"). Reference one specific, real detail about the
+company from the research brief to show genuine interest.
+
+Return strict JSON:
+{
+  "subject_line": string,
+  "email_body": string
+}
+
+VERIFIED RESUME DATA:
+{{final_verified_resume_json}}
+
+COMPANY RESEARCH BRIEF:
+{{research_brief_json}}
+
+RECRUITER/CONTACT NAME (if known):
+{{contact_name_or_null}}

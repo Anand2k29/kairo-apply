@@ -1,0 +1,54 @@
+[
+  {
+    "timestamp": "2026-09-12T16:34:15.897Z",
+    "stage": "demo_guardrail_test",
+    "input": {
+      "candidateProfile": {
+        "name": "Alex Rivera",
+        "email": "alex@example.com",
+        "phone": "+1-555-0199",
+        "desired_role": "Full Stack Engineer",
+        "experience_years": "3 years",
+        "skills": "JavaScript, TypeScript, Node.js, React, Express, MongoDB",
+        "resume_summary": "Fullstack developer specializing in JavaScript/TypeScript web applications and REST APIs."
+      },
+      "TargetJobDesc": "\nRole: Senior Rust & WebAssembly Systems Engineer\nCompany: Solana Labs / Web3 Infrastructure\nRequirements:\n- Rust (5+ years in production)\n- WebAssembly (Wasm) runtime optimization\n- Solana Smart Contracts (Anchor framework)\n- C++ low-level memory management\nResponsibilities:\n- Write zero-cost abstractions in Rust\n- Optimize WebAssembly virtual machines\n  "
+    },
+    "output": {
+      "matchedEvidence": {
+        "matched_evidence": [],
+        "unsupported_requirements": [
+          "Rust",
+          "WebAssembly",
+          "Solana",
+          "C++",
+          "Wasm",
+          "Anchor",
+          "Smart Contracts"
+        ],
+        "strongest_projects_for_this_role": []
+      },
+      "factCheck": {
+        "verified_bullets": [],
+        "flagged_bullets": [
+          {
+            "bullet": "Senior Rust engineer with 5 years experience building Solana WebAssembly smart contracts.",
+            "issue": "Original evidence shows 3 years of experience as a Full Stack Engineer with JavaScript/TypeScript skills, not Rust or Solana.",
+            "severity": "major"
+          },
+          {
+            "bullet": "Architected low-level Rust & WebAssembly runtime modules for Solana smart contracts processing 50k TPS.",
+            "issue": "No evidence of Rust, WebAssembly, Solana, or TPS metrics in original candidate evidence.",
+            "severity": "major"
+          },
+          {
+            "bullet": "JavaScript",
+            "issue": "Skill is present in original evidence but listed alongside unverified skills (Rust, WebAssembly, Solana).",
+            "severity": "minor"
+          }
+        ],
+        "safe_to_send": false
+      }
+    }
+  }
+]

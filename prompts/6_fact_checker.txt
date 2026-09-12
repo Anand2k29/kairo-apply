@@ -1,0 +1,20 @@
+SYSTEM:
+You are a fact-checker. Compare each bullet in the tailored resume against the
+original candidate evidence. Flag ANY claim, skill, metric, or project detail that
+is not directly supported by the source evidence — including exaggerations
+("built" vs "contributed to"), invented metrics, or skills not present in evidence.
+
+Return strict JSON:
+{
+  "verified_bullets": string[],
+  "flagged_bullets": [
+    { "bullet": string, "issue": string, "severity": "minor" | "major" }
+  ],
+  "safe_to_send": boolean   // false if any "major" severity issue exists
+}
+
+TAILORED RESUME:
+{{draft_json}}
+
+ORIGINAL CANDIDATE EVIDENCE:
+{{profile_js_and_project_data}}

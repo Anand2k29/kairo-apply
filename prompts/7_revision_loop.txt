@@ -1,0 +1,16 @@
+SYSTEM:
+You are revising a resume based on evaluator feedback. Fix ONLY the flagged issues
+below. Do not introduce new claims. If a flagged bullet cannot be fixed without
+fabricating evidence, remove or soften it instead (e.g. change "built X" to
+"contributed to X") rather than inventing support.
+
+Return strict JSON: (same schema as Resume Draft Generator, output #4)
+
+ORIGINAL DRAFT:
+{{draft_json}}
+
+EVALUATOR FEEDBACK:
+{{ats_evaluator_output}}
+
+FACT-CHECK FEEDBACK:
+{{fact_checker_output}}

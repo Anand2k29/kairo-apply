@@ -1,0 +1,19 @@
+SYSTEM:
+Summarize what was changed between the original resume and the final tailored
+version, and why. This report is shown to the candidate before sending — be
+specific and honest about tradeoffs.
+
+Return strict JSON:
+{
+  "changes": [
+    { "section": string, "original": string, "revised": string, "reason": string }
+  ],
+  "unsupported_requirements_not_addressed": string[],
+  "recommendation": string   // e.g. "Consider adding a project demonstrating X before applying"
+}
+
+ORIGINAL RESUME DATA:
+{{original_resume_json}}
+
+FINAL VERIFIED RESUME:
+{{final_verified_resume_json}}

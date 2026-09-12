@@ -1,0 +1,148 @@
+# ─────────────────────────────────────────────────────────────────────
+# listen_space_global.ps1 — Continuous Asynchronous Background Listener for KAIRO
+# Dual-Engine:
+#   1. Continuous Asynchronous Voice Engine (System.Speech RecognizeAsync)
+#   2. High-Frequency Low-Latency Keyboard Hook (GetAsyncKeyState @ 15ms)
+# ─────────────────────────────────────────────────────────────────────
+
+if (-not ([System.Management.Automation.PSTypeName]'WinHook').Type) {
+    $winHookCode = 'using System; using System.Runtime.InteropServices; public class WinHook { [DllImport("user32.dll")] public static extern short GetAsyncKeyState(int vKey); [DllImport("user32.dll")] public static extern bool SetForegroundWindow(IntPtr hWnd); }'
+    Add-Type -TypeDefinition $winHookCode
+}
+
+Add-Type -AssemblyName System.Speech
+
+Write-Host "======================================================"
+Write-Host "  [KAIRO] K.A.I.R.O Global Voice & 3x Spacebar Listener Active"
+Write-Host "======================================================"
+Write-Host "Listening for 'Hello KAIRO' or 3x Rapid Spacebar taps..."
+Write-Host ""
+
+$script:scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Definition
+$script:batPath = Join-Path $script:scriptDir "Start_KAIRO.bat"
+
+# ── Single Instance Guard: Terminate duplicate background listener processes ──
+try {
+    $currentPid = $PID
+    $procs = Get-CimInstance Win32_Process -ErrorAction SilentlyContinue
+    foreach ($p in $procs) {
+        $cmd = $p.CommandLine
+        if ($cmd -and $cmd.Contains("listen_space_global.ps1") -and $p.ProcessId -ne $currentPid) {
+            Stop-Process -Id $p.ProcessId -Force -ErrorAction SilentlyContinue
+        }
+    }
+} catch {}
+
+$script:lastTriggerTime = [DateTime]::Now.AddSeconds(-15)
+
+function TriggerKAIRO($source) {
+    $now = [DateTime]::Now
+    if (($now - $script:lastTriggerTime).TotalSeconds -lt 8) {
+        return # Debounce multiple triggers within 8s
+    }
+
+    $alreadyRunning = $false
+    try {
+        $allProcs = Get-CimInstance Win32_Process -ErrorAction SilentlyContinue
+        foreach ($p in $allProcs) {
+            $cmd = $p.CommandLine
+            if ($cmd -and ($cmd.Contains("index.js") -or $cmd.Contains("Start_KAIRO.bat"))) {
+                $alreadyRunning = $true
+                break
+            }
+        }
+    } catch {}
+
+    if ($alreadyRunning) {
+        Write-Host "[INFO] KAIRO process is already active. Skipping launch."
+        $script:lastTriggerTime = $now
+        return
+    }
+
+    $script:lastTriggerTime = $now
+    Write-Host "[WAKE] Wake signal detected via $source! Launching KAIRO..."
+    try {
+        Start-Process -FilePath "cmd.exe" -ArgumentList "/c", $script:batPath -WindowStyle Normal
+    } catch {
+        Start-Process -FilePath $script:batPath -WindowStyle Normal
+    }
+}
+
+# ── 1. Asynchronous Speech Recognition Engine ───────────────────────
+$sapi = $null
+try {
+    $sapi = New-Object System.Speech.Recognition.SpeechRecognitionEngine
+    $sapi.SetInputToDefaultAudioDevice()
+
+    # Strict Grammar choices for wake words (prevents background noise false triggers)
+    $choices = New-Object System.Speech.Recognition.Choices
+    $choices.Add([string[]]@(
+        "hello kairo", "hey kairo", "hi kairo", "ok kairo", "kairo",
+        "hello kairos", "hey kairos", "wake up kairo", "wake up kairos"
+    ))
+    $gb = New-Object System.Speech.Recognition.GrammarBuilder($choices)
+    $g = New-Object System.Speech.Recognition.Grammar($gb)
+    $sapi.LoadGrammar($g)
+
+    # Register Asynchronous Event Handler with confidence filter (0.60+)
+    $action = {
+        $text = $Event.SourceEventArgs.Result.Text
+        $conf = $Event.SourceEventArgs.Result.Confidence
+        if ($text -and $conf -ge 0.60) {
+            Write-Host "[MIC] Voice Heard: '$text' (Confidence: $conf)"
+            TriggerKAIRO "Voice ('$text')"
+        }
+    }
+    Register-ObjectEvent -InputObject $sapi -EventName "SpeechRecognized" -Action $action | Out-Null
+
+    # Start continuous non-blocking async listening
+    $sapi.RecognizeAsync([System.Speech.Recognition.RecognizeMode]::Multiple)
+    Write-Host "[OK] Continuous Voice Engine active ('Hello KAIRO')."
+} catch {
+    Write-Host "[WARN] Voice Engine fallback mode. Keyboard hook active."
+}
+
+# ── 2. High-Frequency Low-Latency Keyboard Hook (15ms) ───────────────
+# Requires 3 rapid spacebar taps where each tap is within 450ms of the previous tap
+$spaceCount = 0
+$firstTapTime = [DateTime]::Now
+$lastTapTime = [DateTime]::Now
+$wasPressed = $false
+
+Write-Host "[OK] 3x Rapid Spacebar Keyboard Hook active."
+Write-Host "Ready! Say 'Hello KAIRO' or tap Spacebar 3 times rapidly to wake KAIRO."
+Write-Host ""
+
+while ($true) {
+    $state = [WinHook]::GetAsyncKeyState(0x20) # 0x20 = Spacebar
+    $isPressed = ($state -band 0x8000) -ne 0
+
+    if ($isPressed -and -not $wasPressed) {
+        $now = [DateTime]::Now
+        $msSinceLastTap = ($now - $lastTapTime).TotalMilliseconds
+
+        # A valid tap in a rapid sequence must occur within 450ms of the previous tap
+        if ($msSinceLastTap -lt 450) {
+            $spaceCount++
+        } else {
+            $spaceCount = 1
+            $firstTapTime = $now
+        }
+        $lastTapTime = $now
+
+        # Require 3 taps within 900ms total duration
+        if ($spaceCount -ge 3) {
+            $totalMs = ($now - $firstTapTime).TotalMilliseconds
+            if ($totalMs -le 900) {
+                $spaceCount = 0
+                TriggerKAIRO "3x Rapid Spacebar ($([Math]::Round($totalMs))ms)"
+            } else {
+                $spaceCount = 1
+                $firstTapTime = $now
+            }
+        }
+    }
+
+    $wasPressed = $isPressed
+    Start-Sleep -Milliseconds 15
+}
