@@ -222,20 +222,21 @@ ${C.cyan}╰──────────────────────�
 function getFallbackPlan(goal, profile) {
   const goalLower = goal.toLowerCase();
 
-  // 1. Direct URL navigation goal (e.g. Job Application URLs)
-  const urlMatch = goal.match(/https?:\/\/[^\s,)]+/i);
-  if (urlMatch) {
-    const targetUrl = urlMatch[0].replace(/[.,]$/, '');
+  // 1. Direct URL navigation goal (single or batch Job Application URLs)
+  const allUrls = goal.match(/https?:\/\/[^\s,)]+/g);
+  if (allUrls && allUrls.length > 0) {
+    const cleanUrls = allUrls.map(u => u.replace(/[.,)]$/, ''));
     if (goalLower.includes("apply") || goalLower.includes("job") || goalLower.includes("career")) {
-      return [
-        `Navigate to ${targetUrl}`,
-        `wait_for_login`,
-        `Click "Apply Now" or "Easy Apply" button`,
-        `Fill contact details using candidate profile (${profile?.name || 'Candidate'}, ${profile?.email || 'email@example.com'})`,
-        `Upload resume or paste cover letter text`,
-        `Pause before submitting application for human confirmation`,
-        `done`
-      ];
+      const batchPlan = [];
+      cleanUrls.forEach((targetUrl) => {
+        batchPlan.push(`Navigate to ${targetUrl}`);
+        batchPlan.push(`wait_for_login`);
+        batchPlan.push(`Click "Apply Now" or "Easy Apply" button`);
+        batchPlan.push(`Fill contact details using candidate profile (${profile?.name || 'Candidate'}, ${profile?.email || 'email@example.com'})`);
+      });
+      batchPlan.push(`Pause before submitting application for human confirmation`);
+      batchPlan.push(`done`);
+      return batchPlan;
     }
   }
 
@@ -256,15 +257,27 @@ function getFallbackPlan(goal, profile) {
     ];
   }
 
-  // 2. Cold mailing fallback plan
+  // 3. Cold mailing fallback plan
   if (goalLower.includes("mail") || goalLower.includes("email") || goalLower.includes("gmail") || goalLower.includes("outreach")) {
+    let recipient = "recruiter@company.com";
+    let subject = "Job Application & Opportunity Inquiry";
+
+    const recMatch = goal.match(/recipient (?:to|is|set to) ["']?([^"',]+)["']?/i) || goal.match(/to ["']?([^"',\s]+@[^"',\s]+)["']?/i);
+    if (recMatch) recipient = recMatch[1].trim();
+
+    const subjMatch = goal.match(/subject (?:to|is|set to) ["']?([^"']+)["']?/i);
+    if (subjMatch) subject = subjMatch[1].trim();
+
+    const bodyText = `Dear Hiring Team, I am writing to express my strong interest in joining your engineering team. My background includes ${profile?.skills || 'JavaScript, TypeScript, React, Node.js, Python'} with ${profile?.experience_years || '3+ years'} of hands-on experience building scalable web applications. Best regards, ${profile?.name || 'Candidate'} (${profile?.email || ''}, ${profile?.phone || ''})`;
+
     return [
       `Navigate to https://mail.google.com`,
       `wait_for_login`,
       `Click "Compose" button to open new email draft`,
-      `Type recipient address in the To field`,
-      `Type subject in Subject field`,
-      `Type email body with profile introduction and application pitch`,
+      `Type '${recipient}' in recipient To field`,
+      `Type '${subject}' in Subject field`,
+      `Type '${bodyText}' in email body`,
+      `Pause before sending email for human confirmation`,
       `done`
     ];
   }
@@ -1019,14 +1032,9 @@ ${C.green}╔══════════════════════�
   }
 
   // ── Fresh execution ──
-  log("📋", "Planning workflow...", "cyan");
-  narrate("Planning your workflow now.");
-  const plan = await askPlanner(goal, profile);
+  log("🚀", "Launching Playwright Chromium browser live...", "cyan");
+  narrate("Launching browser.");
 
-  log("✅", `Plan (${plan.length} steps):`, "green");
-  plan.forEach((step, i) => log("  ", `${i + 1}. ${step}`, "dim"));
-
-  // Launch browser
   if (!fs.existsSync(USER_DATA_DIR)) fs.mkdirSync(USER_DATA_DIR, { recursive: true });
 
   const context = await chromium.launchPersistentContext(USER_DATA_DIR, {
@@ -1037,8 +1045,14 @@ ${C.green}╔══════════════════════�
   const page = context.pages()[0] || await context.newPage();
   try { await page.bringToFront(); } catch {}
   await injectOverlay(page);
-  await updateOverlayStatus(page, "🚀 Starting workflow...");
-  narrate("Launching browser. Starting workflow.");
+  await updateOverlayStatus(page, "🧠 KAIRO Planning workflow...");
+
+  log("📋", "Planning workflow...", "cyan");
+  narrate("Planning your workflow now.");
+  const plan = await askPlanner(goal, profile);
+
+  log("✅", `Plan (${plan.length} steps):`, "green");
+  plan.forEach((step, i) => log("  ", `${i + 1}. ${step}`, "dim"));
 
   const recordedActions = [];
 
