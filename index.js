@@ -655,7 +655,7 @@ async function executeStepSmart(context, pageInput, stepDescription, recordedAct
   await page.bringToFront();
   const stepLower = stepDescription.toLowerCase().trim();
 
-  // ── ANA narration ──
+  // ── KAIRO narration ──
   announceStep(stepDescription);
 
   // ── Meta-steps ──
@@ -847,34 +847,34 @@ async function executeStepSmart(context, pageInput, stepDescription, recordedAct
 
 // ─── Main ────────────────────────────────────────────────────────────
 async function runSlabRoute() {
-  // ── ANA Voice Detection ──
+  // ── KAIRO Voice Detection ──
   const voiceOK = checkVoiceAvailability();
 
   console.log(`
 ${C.cyan}──────────────────────────────────────────────────────────────${C.r}
-  ${C.b}${C.yellow}🤖  A.N.A  —  Autonomous Navigation Assistant${C.r}
-  ${C.d}Voice-Activated • Self-Learning • Browser Automation${C.r}
+  ${C.b}${C.yellow}🤖  K.A.I.R.O  —  Kairos Opportune Timing Assistant${C.r}
+  ${C.d}Voice-Activated • Self-Learning • Resume & Application Agent${C.r}
 ${C.cyan}──────────────────────────────────────────────────────────────${C.r}
 `);
 
   const forceVoice = process.argv.includes("--voice") || process.argv.includes("-v");
 
   if (voiceOK) {
-    console.log(`  ${C.green}✅ ANA voice assistant is ready!${C.r}`);
+    console.log(`  ${C.green}✅ KAIRO voice assistant is ready!${C.r}`);
 
     let mode = forceVoice ? "voice" : null;
 
     if (!forceVoice) {
-      console.log(`  ${C.cyan}🎤 Say "${C.b}Hello ANA${C.r}${C.cyan}" or press ${C.b}3x Spacebar${C.r}${C.cyan} to wake ANA (or ${C.b}Enter${C.r}${C.cyan} for keyboard)...${C.r}\n`);
+      console.log(`  ${C.cyan}🎤 Say "${C.b}Hello KAIRO${C.r}${C.cyan}" or press ${C.b}3x Spacebar${C.r}${C.cyan} to wake KAIRO (or ${C.b}Enter${C.r}${C.cyan} for keyboard)...${C.r}\n`);
       mode = await detectWakeWordOrKeypress(7);
     }
 
     if (mode === "voice") {
       setVoiceMode(true);
-      console.log(`\n  ${C.green}${C.b}🤖 ANA activated! Voice mode enabled.${C.r}\n`);
+      console.log(`\n  ${C.green}${C.b}🤖 KAIRO activated! Voice mode enabled.${C.r}\n`);
       greetUser();
     } else {
-      console.log(`\n  ${C.d}⌨️  Keyboard mode. (Select option 10 to switch to voice anytime)${C.r}\n`);
+      console.log(`\n  ${C.d}⌨️  Keyboard mode. (Select option 5 to switch to voice anytime)${C.r}\n`);
     }
   } else {
     console.log(`  ${C.d}🔇 Voice not available (Windows Speech not found). Using keyboard.${C.r}\n`);
