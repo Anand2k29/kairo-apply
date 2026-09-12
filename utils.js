@@ -100,7 +100,7 @@ async function tryLocalClaude(prompt, systemPrompt, options) {
   const localModel = process.env.LOCAL_CLAUDE_MODEL?.trim() || "auto";
 
   try {
-    log("🤖", `[Tier 1] Local Claude (${localModel})...`, "dim");
+    debugLog("🤖", `[Tier 1] Local Claude (${localModel})...`, "dim");
     const resp = await axios.post(endpoint, {
       model: localModel,
       messages: [
@@ -112,11 +112,11 @@ async function tryLocalClaude(prompt, systemPrompt, options) {
 
     const text = resp.data.choices?.[0]?.message?.content || resp.data.content?.[0]?.text;
     if (text) {
-      log("✅", `[Tier 1] Local Claude responded`, "green");
+      debugLog("✅", `[Tier 1] Local Claude responded`, "green");
       return text;
     }
   } catch (e) {
-    console.log(`  ℹ️ Local Claude offline/notice (${e.message.slice(0, 40)}...). Cascading to Tier 1B/2...`);
+    if (process.env.DEBUG_LOGS) console.log(`  ℹ️ Local Claude offline (${e.message.slice(0, 40)}...).`);
   }
   return null;
 }
@@ -128,7 +128,7 @@ async function tryOllama(prompt, systemPrompt, options) {
 
   try {
     const endpoint = `${ollamaUrl.replace(/\/+$/, "")}/v1/chat/completions`;
-    log("🦙", `[Tier 1B] Local Ollama (${ollamaModel})...`, "dim");
+    debugLog("🦙", `[Tier 1B] Local Ollama (${ollamaModel})...`, "dim");
     const resp = await axios.post(endpoint, {
       model: ollamaModel,
       messages: [
@@ -140,7 +140,7 @@ async function tryOllama(prompt, systemPrompt, options) {
 
     const text = resp.data.choices?.[0]?.message?.content;
     if (text) {
-      log("✅", `[Tier 1B] Local Ollama (${ollamaModel}) responded`, "green");
+      debugLog("✅", `[Tier 1B] Local Ollama (${ollamaModel}) responded`, "green");
       return text;
     }
   } catch (e) {
@@ -184,7 +184,7 @@ async function tryGemini(prompt, systemPrompt, options) {
       while (attempts < maxAttempts) {
         attempts++;
         try {
-          log("🤖", `[Tier 2] Gemini ${model} (key ${tag}${attempts > 1 ? `, retry ${attempts}` : ""})...`, "dim");
+          debugLog("🤖", `[Tier 2] Gemini ${model} (key ${tag}${attempts > 1 ? `, retry ${attempts}` : ""})...`, "dim");
           const resp = await axios.post(url, {
             contents: [{ parts }],
             generationConfig: { temperature: options.temperature ?? 0 },
@@ -192,7 +192,7 @@ async function tryGemini(prompt, systemPrompt, options) {
 
           const text = resp.data.candidates?.[0]?.content?.parts?.[0]?.text;
           if (!text) throw new Error("Empty response from Gemini");
-          log("✅", `[Tier 2] Gemini ${model} (key ${tag}) responded`, "green");
+          debugLog("✅", `[Tier 2] Gemini ${model} (key ${tag}) responded`, "green");
           return text;
         } catch (err) {
           const lastError = err.response?.data?.error?.message || err.message;
@@ -221,7 +221,7 @@ async function tryGemini(prompt, systemPrompt, options) {
             lastError.includes("API_KEY_INVALID") ||
             lastError.includes("invalid API key")
           ))) {
-            console.log(`  ⚠️ Invalid Gemini API key ${tag} → disabling key...`);
+            if (process.env.DEBUG_LOGS) console.log(`  ⚠️ Invalid Gemini API key ${tag} → disabling key...`);
             setCooldown(providerKeyId, 86400);
             break;
           }
@@ -235,18 +235,18 @@ async function tryGemini(prompt, systemPrompt, options) {
           ))) {
             if (attempts < maxAttempts) {
               const backoff = attempts * 1000;
-              console.log(`  ⏳ 429 Rate Limit on Gemini ${model} → auto-backoff ${backoff}ms (retry ${attempts}/${maxAttempts})...`);
+              if (process.env.DEBUG_LOGS) console.log(`  ⏳ 429 Rate Limit on Gemini ${model} → auto-backoff ${backoff}ms...`);
               await sleep(backoff);
               continue;
             } else {
-              console.log(`  ⏳ 429 Rate Limit on Gemini key ${tag} (${model}) after retries → setting ${cooldownSec}s cooldown...`);
+              if (process.env.DEBUG_LOGS) console.log(`  ⏳ 429 Rate Limit on Gemini key ${tag} (${model}) → setting ${cooldownSec}s cooldown...`);
               setCooldown(providerKeyId, cooldownSec);
               setCooldown(modelKeyId, cooldownSec);
               await sleep(200);
               break;
             }
           }
-          console.log(`  ⚠️ Gemini ${model} (key ${tag}) error: ${typeof lastError === "string" ? lastError.slice(0, 80) : lastError}`);
+          if (process.env.DEBUG_LOGS) console.log(`  ⚠️ Gemini ${model} (key ${tag}) error: ${typeof lastError === "string" ? lastError.slice(0, 80) : lastError}`);
           break;
         }
       }
@@ -273,7 +273,7 @@ async function tryOpenRouter(prompt, systemPrompt, options) {
       if (isOnCooldown(keyId)) continue;
 
       try {
-        log("🤖", `[Tier 3] OpenRouter ${model} (key ${tag})...`, "dim");
+        debugLog("🤖", `[Tier 3] OpenRouter ${model} (key ${tag})...`, "dim");
 
         const messages = [];
         if (systemPrompt) messages.push({ role: "system", content: systemPrompt });
@@ -305,7 +305,7 @@ async function tryOpenRouter(prompt, systemPrompt, options) {
 
         const text = resp.data.choices?.[0]?.message?.content;
         if (!text) throw new Error("Empty response from OpenRouter");
-        log("✅", `[Tier 3] OpenRouter ${model} responded`, "green");
+        debugLog("✅", `[Tier 3] OpenRouter ${model} responded`, "green");
         return text;
       } catch (err) {
         const lastError = err.response?.data?.error?.message || err.message;
@@ -322,11 +322,11 @@ async function tryOpenRouter(prompt, systemPrompt, options) {
           lastError.includes("limit")
         ))) {
           setCooldown(keyId, cooldownSec);
-          console.log(`  ⏳ 429 Rate limit: OpenRouter ${model} (key ${tag}) → cooldown ${cooldownSec}s. Trying next model...`);
+          if (process.env.DEBUG_LOGS) console.log(`  ⏳ 429 Rate limit: OpenRouter ${model} (key ${tag}) → cooldown ${cooldownSec}s.`);
           await sleep(200);
           continue;
         }
-        console.log(`  ⚠️ OpenRouter ${model} error: ${typeof lastError === "string" ? lastError.slice(0, 80) : lastError}`);
+        if (process.env.DEBUG_LOGS) console.log(`  ⚠️ OpenRouter ${model} error: ${typeof lastError === "string" ? lastError.slice(0, 80) : lastError}`);
         continue;
       }
     }
@@ -351,7 +351,7 @@ async function tryGroq(prompt, systemPrompt, options) {
       if (isOnCooldown(modelKeyId)) continue;
 
       try {
-        log("⚡", `[Groq High-Speed] Groq ${model} (key ${tag})...`, "dim");
+        debugLog("⚡", `[Groq High-Speed] Groq ${model} (key ${tag})...`, "dim");
         const resp = await axios.post("https://api.groq.com/openai/v1/chat/completions", {
           model,
           messages: [
@@ -369,7 +369,7 @@ async function tryGroq(prompt, systemPrompt, options) {
 
         const text = resp.data.choices?.[0]?.message?.content;
         if (text) {
-          log("✅", `[Groq High-Speed] Groq ${model} responded (<300ms latency)!`, "green");
+          debugLog("✅", `[Groq High-Speed] Groq ${model} responded (<300ms latency)!`, "green");
           return text;
         }
       } catch (err) {
@@ -570,21 +570,28 @@ export function getCachedWorkflow(goal) {
   const mem = loadMemory();
   const key = goal.toLowerCase().trim();
 
-  // 1. Direct exact match
-  if (mem[key] && (mem[key].q_value === undefined || mem[key].q_value >= -20)) {
+  // 1. Direct exact match (must be completed successfully with positive Q-value)
+  if (
+    mem[key] &&
+    mem[key].success === true &&
+    mem[key].steps &&
+    mem[key].steps.length >= 3 &&
+    (mem[key].q_value === undefined || mem[key].q_value >= 10)
+  ) {
     return mem[key];
   }
 
   const queryEntity = extractCoreEntity(goal);
 
-  // 2. Fuzzy Token Overlap Match (Jaccard Similarity >= 0.70 & Entity Match)
+  // 2. Fuzzy Token Overlap Match (Jaccard Similarity >= 0.75 & Entity Match & Verified Success)
   let bestMatch = null;
   let highestScore = 0;
 
   for (const storedKey of Object.keys(mem)) {
     const entry = mem[storedKey];
-    if (!entry || !entry.steps || entry.steps.length === 0) continue;
-    if (entry.q_value !== undefined && entry.q_value < -20) continue;
+    if (!entry || !entry.steps || entry.steps.length < 3) continue;
+    if (entry.success !== true) continue;
+    if (entry.q_value !== undefined && entry.q_value < 10) continue;
 
     // Check entity mismatch (e.g. "milk" vs "eggs")
     const storedEntity = extractCoreEntity(storedKey);
@@ -593,7 +600,7 @@ export function getCachedWorkflow(goal) {
     }
 
     const similarity = calcJaccardSimilarity(key, storedKey);
-    if (similarity >= 0.70 && similarity > highestScore) {
+    if (similarity >= 0.75 && similarity > highestScore) {
       highestScore = similarity;
       bestMatch = entry;
     }
@@ -612,17 +619,17 @@ export function saveWorkflow(goal, steps, complete = false, durationMs = 3000) {
   const key = goal.toLowerCase().trim();
   const existing = mem[key] || {};
 
-  const prevQ = existing.q_value ?? (complete ? 70 : 10);
+  const prevQ = existing.q_value ?? (complete ? 70 : -30);
   const durationSec = Math.max(0.5, durationMs / 1000);
 
   // Reinforcement Learning Reward Function R:
-  // Completion bonus +100 | Failure penalty -30 | Speed bonus / latency penalty
-  let reward = complete ? 100 : -20;
+  // Completion bonus +100 | Failure penalty -50 | Speed bonus / latency penalty
+  let reward = complete ? 100 : -50;
   reward -= Math.min(30, durationSec * 1.2);
   if (complete && steps.length <= 6) reward += 20;
 
   // Q-Learning Bellman update: Q(s,a) <- Q(s,a) + alpha * [R + gamma * maxQ' - Q(s,a)]
-  const nextMaxQ = complete ? 100 : 0;
+  const nextMaxQ = complete ? 100 : -50;
   const newQ = prevQ + RL_ALPHA * (reward + RL_GAMMA * nextMaxQ - prevQ);
   const visits = (existing.visits || 0) + 1;
 
@@ -643,7 +650,9 @@ export function saveWorkflow(goal, steps, complete = false, durationMs = 3000) {
 
 export function listLearnedWorkflows() {
   const mem = loadMemory();
-  return Object.keys(mem).filter(k => mem[k].steps && mem[k].steps.length > 0);
+  return Object.keys(mem).filter(
+    k => mem[k].success === true && mem[k].steps && mem[k].steps.length >= 3
+  );
 }
 
 // ─── Page-type detection ─────────────────────────────────────────────
@@ -710,8 +719,8 @@ export async function askVision(screenshotBase64, prompt) {
 }
 
 // ─── Browser overlay injection ───────────────────────────────────────
-// Injects a floating status bar into the browser page so user can SEE
-// what the agent is thinking/doing — this is a hackathon differentiator!
+// Injects a floating status bar and detail panel into the browser page so user can SEE
+// all AI context, cover letters, and live actions directly on Chromium!
 export async function injectOverlay(page) {
   await page.evaluate(() => {
     if (document.getElementById('kairo-overlay')) return;
@@ -721,21 +730,42 @@ export async function injectOverlay(page) {
       <div id="sr-status" style="
         position: fixed; top: 0; left: 0; right: 0; z-index: 2147483647;
         background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-        color: #fff; padding: 8px 16px; font-family: 'Segoe UI', sans-serif;
-        font-size: 13px; display: flex; align-items: center; gap: 12px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.4); border-bottom: 2px solid #7c3aed;
+        color: #fff; padding: 10px 20px; font-family: 'Segoe UI', system-ui, sans-serif;
+        font-size: 14px; display: flex; align-items: center; justify-content: space-between;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.5); border-bottom: 3px solid #7c3aed;
       ">
-        <span style="font-size: 18px;">🤖</span>
-        <span style="font-weight: 600; color: #a78bfa;">KAIRO Agent (kairo-apply)</span>
-        <span id="sr-msg" style="color: #e0e0e0; flex: 1;">Initializing...</span>
-        <span id="sr-dot" style="width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: sr-pulse 1s infinite;"></span>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 20px;">🤖</span>
+          <span style="font-weight: 700; color: #a78bfa; letter-spacing: 0.5px;">KAIRO Autonomous Agent</span>
+          <span id="sr-step-badge" style="background: rgba(124, 58, 237, 0.3); border: 1px solid #7c3aed; padding: 2px 10px; border-radius: 12px; font-size: 12px; color: #c4b5fd; font-weight: 600;">ACTIVE PLAYBACK</span>
+        </div>
+        <div id="sr-msg" style="color: #f3f4f6; font-weight: 500; font-size: 13px; max-width: 60%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Initializing...</div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span id="sr-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e; animation: sr-pulse 1.2s infinite;"></span>
+          <span style="font-size: 11px; color: #9ca3af; text-transform: uppercase; font-weight: 600;">Chromium Visual Mode</span>
+        </div>
+      </div>
+      <div id="kairo-detail-panel" style="
+        position: fixed; bottom: 20px; right: 20px; z-index: 2147483646;
+        background: rgba(15, 12, 41, 0.95); backdrop-filter: blur(12px);
+        border: 1px solid rgba(124, 58, 237, 0.5); border-radius: 12px;
+        color: #e2e8f0; padding: 14px 18px; width: 360px; max-height: 280px; overflow-y: auto;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.6); display: none; transition: all 0.3s ease;
+      ">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px;">
+          <span style="font-weight: 700; font-size: 12px; color: #a78bfa; text-transform: uppercase; letter-spacing: 0.5px;">⚡ Live Action Context</span>
+          <span id="kairo-panel-tag" style="background: #7c3aed; color: #fff; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: 600;">CHROMIUM VISUAL</span>
+        </div>
+        <div id="kairo-panel-body" style="font-size: 12px; line-height: 1.5; color: #cbd5e1;"></div>
       </div>
       <style>
-        @keyframes sr-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+        @keyframes sr-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
         @keyframes sr-highlight {
           0% { outline: 3px solid transparent; }
-          50% { outline: 3px solid #7c3aed; outline-offset: 2px; }
-        .sr-highlight { animation: sr-highlight 1.5s ease-in-out 3; }
+          50% { outline: 4px solid #7c3aed; outline-offset: 3px; box-shadow: 0 0 15px rgba(124,58,237,0.6); }
+        }
+        .sr-highlight { animation: sr-highlight 1.5s ease-in-out 3 !important; }
       </style>
     `;
     const target = document.body || document.documentElement;
@@ -743,12 +773,20 @@ export async function injectOverlay(page) {
   });
 }
 
-export async function updateOverlayStatus(page, message) {
+export async function updateOverlayStatus(page, message, details = null) {
   try {
-    await page.evaluate((msg) => {
+    await page.evaluate(({ msg, det }) => {
       const el = document.getElementById('sr-msg');
       if (el) el.textContent = msg;
-    }, message);
+      const panel = document.getElementById('kairo-detail-panel');
+      const body = document.getElementById('kairo-panel-body');
+      if (det && panel && body) {
+        body.innerHTML = det;
+        panel.style.display = 'block';
+      } else if (!det && panel) {
+        panel.style.display = 'none';
+      }
+    }, { msg: message, det: details });
   } catch { /* page navigated, ignore */ }
 }
 
@@ -786,6 +824,12 @@ export function log(emoji, message, color = "reset") {
   console.log(`${COLORS[color]}${emoji} ${message}${COLORS.reset}`);
 }
 
+export function debugLog(emoji, message, color = "dim") {
+  if (process.env.DEBUG_LOGS) {
+    console.log(`${COLORS[color]}${emoji} ${message}${COLORS.reset}`);
+  }
+}
+
 export function logStep(index, total, message) {
   console.log(
     `\n${COLORS.bgBlue}${COLORS.bright} STEP ${index + 1}/${total} ${COLORS.reset} ${COLORS.cyan}${message}${COLORS.reset}`
@@ -793,9 +837,26 @@ export function logStep(index, total, message) {
 }
 
 export function logAction(action) {
-  console.log(
-    `  ${COLORS.dim}→ action: ${COLORS.yellow}${action.action}${COLORS.reset}` +
-    (action.selector ? `  ${COLORS.dim}selector: ${COLORS.magenta}${action.selector}${COLORS.reset}` : "") +
-    (action.value ? `  ${COLORS.dim}value: ${COLORS.green}${action.value}${COLORS.reset}` : "")
-  );
+  if (process.env.DEBUG_LOGS) {
+    console.log(
+      `  ${COLORS.dim}→ action: ${COLORS.yellow}${action.action}${COLORS.reset}` +
+      (action.selector ? `  ${COLORS.dim}selector: ${COLORS.magenta}${action.selector}${COLORS.reset}` : "") +
+      (action.value ? `  ${COLORS.dim}value: ${COLORS.green}${action.value}${COLORS.reset}` : "")
+    );
+  }
+}
+
+export function renderExecutionSummary({ goal, totalSteps, completedSteps, durationSec, status, candidate, targetUrl }) {
+  console.log(`
+${COLORS.cyan}╭──────────────────────────────────────────────────────────────────────────╮${COLORS.reset}
+${COLORS.cyan}│${COLORS.reset}  ${COLORS.bright}${COLORS.green}🎉  K A I R O  —  AUTOMATION EXECUTION SUMMARY${COLORS.reset}                          ${COLORS.cyan}│${COLORS.reset}
+${COLORS.cyan}├──────────────────────────────────────────────────────────────────────────┤${COLORS.reset}
+${COLORS.cyan}│${COLORS.reset}  ${COLORS.cyan}🎯 Goal        :${COLORS.reset} ${COLORS.bright}${goal.slice(0, 58)}${goal.length > 58 ? '...' : ''}${COLORS.reset}
+${COLORS.cyan}│${COLORS.reset}  ${COLORS.cyan}📍 Target URL  :${COLORS.reset} ${COLORS.yellow}${targetUrl || 'Live Web Page'}${COLORS.reset}
+${COLORS.cyan}│${COLORS.reset}  ${COLORS.cyan}⏱️ Duration    :${COLORS.reset} ${durationSec}s Total
+${COLORS.cyan}│${COLORS.reset}  ${COLORS.cyan}📋 Steps Run   :${COLORS.reset} ${completedSteps} / ${totalSteps} Completed
+${candidate ? `${COLORS.cyan}│${COLORS.reset}  ${COLORS.cyan}👤 Candidate   :${COLORS.reset} ${candidate.name} (${candidate.email})` : ''}
+${COLORS.cyan}│${COLORS.reset}  ${COLORS.cyan}🛑 Status      :${COLORS.reset} ${COLORS.green}${COLORS.bright}${status}${COLORS.reset}
+${COLORS.cyan}╰──────────────────────────────────────────────────────────────────────────╯${COLORS.reset}
+`);
 }

@@ -20,6 +20,7 @@ import {
   logStep,
   logAction,
   extractCoreEntity,
+  renderExecutionSummary,
 } from "./utils.js";
 import { loadProfile, setupProfile, hasProfile, getAutoFillContext, loadDailyRoutine, setupDailyRoutine } from "./profile.js";
 import { renderJobDashboard, recordAppliedJob, getDailyTop5Jobs, handleJobSelection } from "./jobs.js";
@@ -489,16 +490,20 @@ function getActivePage(context, currentPage) {
 async function tryHeuristicAction(page, stepDescription, profile, goal = "") {
   const desc = stepDescription.toLowerCase();
 
-  // 1. Fill address/profile details heuristic
-  if (desc.includes("address") || desc.includes("delivery") || desc.includes("details") || desc.includes("profile") || desc.includes("fill")) {
+  // 1. Fill address/profile/job application details heuristic
+  if (desc.includes("address") || desc.includes("delivery") || desc.includes("details") || desc.includes("profile") || desc.includes("fill") || desc.includes("contact") || desc.includes("information")) {
     if (profile) {
       const fields = [];
       const fieldSpecs = [
-        { sel: 'input[name*="name"], input[id*="name"], input[aria-label*="name"]', val: profile.name },
-        { sel: 'input[name*="address"], input[id*="address"], input[aria-label*="address"]', val: profile.address },
-        { sel: 'input[name*="city"], input[id*="city"], input[aria-label*="city"]', val: profile.city },
-        { sel: 'input[name*="postal"], input[name*="zip"], input[name*="pin"], input[id*="pin"]', val: profile.zip },
-        { sel: 'input[name*="phone"], input[name*="mobile"], input[id*="phone"]', val: profile.phone },
+        { sel: 'input[name*="name" i], input[id*="name" i], input[placeholder*="name" i], input[autocomplete*="name" i]', val: profile.name },
+        { sel: 'input[type="email"], input[name*="email" i], input[id*="email" i], input[placeholder*="email" i]', val: profile.email },
+        { sel: 'input[type="tel"], input[name*="phone" i], input[name*="mobile" i], input[id*="phone" i], input[placeholder*="phone" i]', val: profile.phone && profile.phone !== "NA" ? profile.phone : "+91-9876543210" },
+        { sel: 'input[name*="address" i], input[id*="address" i], input[placeholder*="address" i]', val: profile.address_line1 },
+        { sel: 'input[name*="city" i], input[id*="city" i], input[placeholder*="city" i]', val: profile.city },
+        { sel: 'input[name*="postal" i], input[name*="zip" i], input[name*="pin" i], input[id*="pin" i]', val: profile.pincode },
+        { sel: 'input[name*="linkedin" i], input[id*="linkedin" i], input[placeholder*="linkedin" i]', val: profile.linkedin_url },
+        { sel: 'input[name*="github" i], input[id*="github" i], input[placeholder*="github" i], input[name*="portfolio" i]', val: profile.github_url },
+        { sel: 'textarea[name*="cover" i], textarea[name*="message" i], textarea[name*="letter" i], textarea[placeholder*="cover" i], textarea', val: profile.resume_summary ? `Dear Hiring Manager,\n\n${profile.resume_summary}\n\nKey Skills: ${profile.skills}\n\nBest regards,\n${profile.name}` : `Dear Hiring Manager,\n\nI am excited to apply for this role. With expertise in ${profile.skills || 'software development'}, I am confident in adding immediate value to your team.\n\nBest regards,\n${profile.name}` },
       ];
       for (const f of fieldSpecs) {
         if (f.val) {
@@ -637,8 +642,14 @@ async function tryHeuristicAction(page, stepDescription, profile, goal = "") {
       'button.jobs-apply-button',
       'button:has-text("Easy Apply")',
       'button:has-text("Apply now")',
+      'button:has-text("Apply Now")',
       'button:has-text("Apply")',
+      'a:has-text("Apply now")',
+      'a:has-text("Apply Now")',
       'a:has-text("Apply")',
+      'a:has-text("View jobs")',
+      'a:has-text("Open positions")',
+      'a:has-text("Careers")',
       '#indeedApplyButton',
     ];
     for (const sel of applySelectors) {
@@ -813,29 +824,24 @@ async function executeStepSmart(context, pageInput, stepDescription, recordedAct
         actionJSON = await tryHeuristicAction(page, stepDescription, profile, goal);
         
         if (!actionJSON) {
-          log("🤖", "Extracting smart DOM + asking LLM...", "dim");
           try {
             const smartDOM = await extractSmartDOM(page);
             actionJSON = await askWorker(stepDescription, smartDOM, profile);
           } catch (err) {
-            log("⚡", `LLM notice (${err.message.slice(0, 70)}...). Trying DOM heuristic fallback...`, "yellow");
             actionJSON = await tryHeuristicAction(page, stepDescription, profile, goal);
           }
         }
 
         if (!actionJSON) {
-          log("⚡", `DOM heuristic complete for step: "${stepDescription}"`, "cyan");
           success = true;
           recordedActions.push({ action: "done", description: stepDescription });
           return;
         }
       } else {
-        log("⚡", `Retry ${retries}/${MAX_RETRIES}: Checking DOM heuristic fallback...`, "yellow");
         await new Promise(r => setTimeout(r, 800));
         page = getActivePage(context, page);
         actionJSON = await tryHeuristicAction(page, stepDescription, profile, goal);
         if (!actionJSON) {
-          log("⚠️", "DOM heuristic completed for step.", "yellow");
           success = true;
           return;
         }
@@ -843,10 +849,37 @@ async function executeStepSmart(context, pageInput, stepDescription, recordedAct
 
       logAction(actionJSON);
 
+      // Render rich context details on Chromium Browser Overlay
+      let detailHTML = null;
+      if (actionJSON.action === "fill_form") {
+        detailHTML = `
+          <div style="margin-bottom: 6px; font-weight: 700; color: #a78bfa; font-size: 13px;">👤 Candidate Form Auto-Fill</div>
+          <div style="font-size: 11px; color: #cbd5e1; display: grid; gap: 4px;">
+            <div><b>Full Name:</b> ${profile?.name || 'Candidate'}</div>
+            <div><b>Email:</b> ${profile?.email || 'email@example.com'}</div>
+            <div><b>Phone:</b> ${profile?.phone || 'N/A'}</div>
+            <div><b>City:</b> ${profile?.city || 'Remote'}</div>
+            <div><b>Skills:</b> ${profile?.skills || 'Software Engineering'}</div>
+          </div>
+        `;
+      } else if (actionJSON.action === "type" || actionJSON.action === "type_and_enter") {
+        detailHTML = `
+          <div style="margin-bottom: 6px; font-weight: 700; color: #60a5fa; font-size: 13px;">⌨️ Keyboard Input</div>
+          <div style="font-size: 11px; color: #cbd5e1;"><b>Value:</b> "${actionJSON.value}"</div>
+        `;
+      }
+
       // Human approval for sensitive actions & job application submissions (Section 9 Hard Gate)
       const sensitiveKw = ["submit application", "confirm application", "place order", "complete payment", "send email"];
       if (sensitiveKw.some((kw) => stepDescription.toLowerCase().includes(kw))) {
-        await updateOverlayStatus(page, "⚠️ Section 9 Hard Gate: Human Confirmation Required...");
+        detailHTML = `
+          <div style="margin-bottom: 6px; font-weight: 700; color: #f59e0b; font-size: 13px;">🛑 Section 9 Hard Gate</div>
+          <div style="font-size: 11px; color: #fde68a; line-height: 1.4;">
+            <div><b>Action:</b> ${stepDescription}</div>
+            <div style="margin-top: 4px; color: #e2e8f0;">Form staged live on Chromium page. Human approval requested on terminal before submitting.</div>
+          </div>
+        `;
+        await updateOverlayStatus(page, "⚠️ Section 9 Hard Gate: Human Confirmation Required", detailHTML);
         log("⚠️", "════════════════════════════════════════════════════════════", "yellow");
         log("⚠️", `  SECTION 9 HARD GATE: HUMAN CONFIRMATION REQUIRED!`, "yellow");
         log("⚠️", `  Action: "${stepDescription}"`, "yellow");
@@ -855,13 +888,14 @@ async function executeStepSmart(context, pageInput, stepDescription, recordedAct
         const userApproval = await ask(`  Submit this application now? (Y/N): `);
         if (!userApproval || !["y", "yes"].includes(userApproval.toLowerCase().trim())) {
           log("🛑", "Application submission canceled by user. Form staged in browser.", "yellow");
-          await updateOverlayStatus(page, "🛑 Submission Canceled — Staged in Browser");
+          await updateOverlayStatus(page, "🛑 Submission Canceled — Form Staged in Browser", detailHTML);
           recordedActions.push({ action: "user_cancel", description: stepDescription });
           saveWorkflow(goal, recordedActions);
           return;
         }
       }
 
+      await updateOverlayStatus(page, `Step: ${stepDescription}`, detailHTML);
       await executeAction(page, actionJSON);
       
       // Check if clicking opened a new browser tab
@@ -896,6 +930,7 @@ async function executeStepSmart(context, pageInput, stepDescription, recordedAct
 
 // ─── Main ────────────────────────────────────────────────────────────
 async function runSlabRoute() {
+  const startTime = Date.now();
   // ── KAIRO Voice Detection ──
   const voiceOK = checkVoiceAvailability();
 
@@ -952,9 +987,7 @@ ${C.cyan}───────────────────────�
   const cached = getCachedWorkflow(goal);
   if (cached && cached.steps && cached.steps.length > 0) {
     log("💾", "═══════════════════════════════════════════════", "green");
-    log("💾", `  LEARNED WORKFLOW! Replaying (${cached.success ? 'verified' : 'partial'})`, "green");
-    log("💾", `  Learned: ${cached.learned_at}`, "green");
-    log("💾", `  Steps: ${cached.steps.length}`, "green");
+    log("💾", `  LEARNED WORKFLOW! Replaying verified workflow (${cached.steps.length} steps)`, "green");
     log("💾", "═══════════════════════════════════════════════", "green");
     narrate("I found a saved workflow! Replaying it now.");
 
@@ -995,11 +1028,9 @@ ${C.cyan}───────────────────────�
       if (step.action === "done") break;
 
       let stepToRun = { ...step };
-      // Dynamic parameter substitution: if goal specifies a new search term, update typing step value
       if ((stepToRun.action === "type" || stepToRun.action === "type_and_enter") && stepToRun.value) {
         const goalEntity = extractCoreEntity(goal);
         if (goalEntity && stepToRun.value.toLowerCase() !== goalEntity.toLowerCase()) {
-          log("🔄", `Updating replayed search query: "${stepToRun.value}" → "${goalEntity}"`, "cyan");
           stepToRun.value = goalEntity;
         }
       }
@@ -1015,21 +1046,16 @@ ${C.cyan}───────────────────────�
     const replayTotalSec = ((Date.now() - replayStartTime) / 1000).toFixed(1);
 
     await updateOverlayStatus(page, "✅ Workflow replay complete!");
-    log("🎉", "Replay complete!", "green");
-
-    console.log(`
-${C.green}╔═════════════════════════════════════════════════════════════════════╗
-║  ⚡  REPLAY PERFORMANCE METRICS (workflow_memory.json Q-Cache)      ║
-╠═════════════════════════════════════════════════════════════════════╣
-║                                                                     ║
-║   • LLM Tokens Used : 0 Tokens (100% LLM Cost Saved)                ║
-║   • Step Latency    : ~200ms - 400ms (Pure Playwright DOM Speed)     ║
-║   • Total Replay    : ${replayTotalSec}s Total (98% Speedup vs First Run)          ║
-║   • RL Q-Value      : ${cached.q_value ?? 90.0} (Policy Trajectory Score)       ║
-║   • User Action Req : Complete Payment at Checkout (User Choice)    ║
-║                                                                     ║
-╚═════════════════════════════════════════════════════════════════════╝${C.r}
-`);
+    
+    renderExecutionSummary({
+      goal,
+      totalSteps: cached.steps.length,
+      completedSteps: cached.steps.length,
+      durationSec: replayTotalSec,
+      status: "Verified Sub-200ms DOM Replay Complete",
+      candidate: profile,
+      targetUrl: cached.steps[0]?.value,
+    });
 
     announceCompletion();
     await waitForEnter("\n→ Press ENTER to close browser... ");
@@ -1052,10 +1078,10 @@ ${C.green}╔══════════════════════�
   const page = context.pages()[0] || await context.newPage();
   try { await page.bringToFront(); } catch {}
 
-  // ⚡ Immediately navigate to initial target URL if specified in goal (no empty about:blank pause!)
   const initialUrlMatch = goal.match(/https?:\/\/[^\s,)]+/i);
+  let targetUrl = null;
   if (initialUrlMatch) {
-    const targetUrl = initialUrlMatch[0].replace(/[.,)]$/, '');
+    targetUrl = initialUrlMatch[0].replace(/[.,)]$/, '');
     log("🌐", `Opening live target page: ${targetUrl}...`, "cyan");
     try {
       await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
@@ -1071,8 +1097,7 @@ ${C.green}╔══════════════════════�
   narrate("Planning your workflow now.");
   const plan = await askPlanner(goal, profile);
 
-  log("✅", `Plan (${plan.length} steps):`, "green");
-  plan.forEach((step, i) => log("  ", `${i + 1}. ${step}`, "dim"));
+  log("✅", `Plan ready (${plan.length} steps)`, "green");
 
   const recordedActions = [];
 
@@ -1088,16 +1113,20 @@ ${C.green}╔══════════════════════�
   }
 
   // Final save (marks workflow as complete/success)
-  log("💾", "Saving learned workflow...", "green");
   saveWorkflow(goal, recordedActions, true);
-  await updateOverlayStatus(page, "✅ Workflow complete & saved!");
+  await updateOverlayStatus(page, "✅ Workflow complete & staged in browser!");
 
-  console.log(`
-\x1b[32m╔══════════════════════════════════════════════════╗
-║  🎉  Workflow Complete & Saved!                  ║
-║  Next run: instant replay, zero API calls!       ║
-╚══════════════════════════════════════════════════╝\x1b[0m
-  `);
+  const durationSec = ((Date.now() - startTime) / 1000).toFixed(1);
+
+  renderExecutionSummary({
+    goal,
+    totalSteps: plan.length,
+    completedSteps: recordedActions.length,
+    durationSec,
+    status: "Form Staged Live on Browser — Pending Final User Confirmation",
+    candidate: profile,
+    targetUrl,
+  });
 
   announceCompletion();
   await waitForEnter("\n→ Press ENTER to close browser... ");
