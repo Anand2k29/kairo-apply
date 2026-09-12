@@ -232,7 +232,58 @@
     }
   ],
   "savedJobs": [],
-  "appliedJobs": [],
+  "appliedJobs": [
+    {
+      "job": {
+        "id": "wellfound-linear-frontend-2026",
+        "title": "Frontend Engineer (React / UI Performance)",
+        "company": "Linear",
+        "location": "Remote (Global)",
+        "remote_type": "remote",
+        "salary_range": "$130,000 - $160,000 / year + Equity",
+        "experience_required": "2-4 years",
+        "requirements": [
+          "React",
+          "Next.js",
+          "TailwindCSS",
+          "State Management",
+          "UI Micro-animations"
+        ],
+        "responsibilities": [
+          "Craft lightning fast issue tracking UI",
+          "Build custom WebGL components"
+        ],
+        "posted_or_updated_date": "2026-09-10",
+        "application_deadline": "2026-09-30",
+        "num_applicants": 45,
+        "open_positions": 2,
+        "company_rating": 4.9,
+        "company_review_snippet": "Craft-obsessed team building world class developer tools.",
+        "application_url": "https://linear.app/careers",
+        "source": "Wellfound / AngelList",
+        "match_score": 55,
+        "match_breakdown": {
+          "skills_30": 25,
+          "title_20": 15,
+          "salary_15": 0,
+          "deadline_10": 10,
+          "rating_10": 10,
+          "freshness_10": 10,
+          "competition_5": 0
+        },
+        "why_suitable": "This role requires React and UI performance optimization, which align with your skills. The application deadline is soon, and the company has excellent reviews.",
+        "cover_letter_draft": "Dear Hiring Manager, I am excited to apply for the Frontend Engineer position at Linear. My expertise in React and UI performance optimization makes me a strong fit for this role. I am particularly drawn to Linear's focus on crafting world-class developer tools and would be thrilled to contribute to your team.",
+        "resume_bullet_rewrites": [
+          "Optimized UI performance for a high-traffic web application using React.",
+          "Developed custom WebGL components for enhanced user experience.",
+          "Implemented state management solutions for scalable frontend applications."
+        ]
+      },
+      "applied_at": "2026-09-12T17:40:53.306Z",
+      "status": "Application Page Opened — Pending User Confirmation",
+      "user_confirmed": true
+    }
+  ],
   "seenJobIds": [
     "google-sw-eng-3-web-2026",
     "naukri-microsoft-cloud-2026",
