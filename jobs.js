@@ -399,7 +399,7 @@ ${J.cyan}╰──────────────────────�
     return {
       action: "AUTO_APPLY_JOB_BATCH",
       job: firstJob,
-      goal: `Open job application pages for ${selectedJobs.map(j => `"${j.title}" at ${j.company} (${j.application_url})`).join(", ")}, fill contact information using user profile (${profile.name || "Candidate"}, ${profile.email || "email@example.com"}), paste tailored cover letters, and PAUSE BEFORE SUBMITTING to ask user for explicit confirmation.`,
+      goal: `Navigate to ${firstJob.application_url}. Open job application pages for ${selectedJobs.map(j => `"${j.title}" at ${j.company} (${j.application_url})`).join(", ")}, fill contact information using candidate profile (${profile.name || "Candidate"}, ${profile.email || "email@example.com"}), paste tailored cover letters, and PAUSE BEFORE SUBMITTING to ask user for explicit confirmation.`,
     };
   }
 

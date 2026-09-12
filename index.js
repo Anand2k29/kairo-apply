@@ -400,8 +400,15 @@ async function executeAction(page, action) {
     case "goto":
       log("🌐", `Navigating to: ${action.value}`, "blue");
       await updateOverlayStatus(page, `Navigating to ${action.value}`);
-      await page.goto(action.value, { waitUntil: "commit", timeout: 8000 }); // ⚡ 8s commit timeout
-      await injectOverlay(page); // Re-inject after navigation
+      try {
+        await page.goto(action.value, { waitUntil: "domcontentloaded", timeout: 30000 });
+      } catch (err) {
+        log("🔄", `Fast commit fallback for ${action.value}...`, "yellow");
+        try {
+          await page.goto(action.value, { waitUntil: "commit", timeout: 20000 });
+        } catch {}
+      }
+      try { await injectOverlay(page); } catch {} // Re-inject after navigation
       break;
 
     case "click":
@@ -1048,10 +1055,13 @@ ${C.green}╔══════════════════════�
   // ⚡ Immediately navigate to initial target URL if specified in goal (no empty about:blank pause!)
   const initialUrlMatch = goal.match(/https?:\/\/[^\s,)]+/i);
   if (initialUrlMatch) {
-    const targetUrl = initialUrlMatch[0].replace(/[.,]$/, '');
+    const targetUrl = initialUrlMatch[0].replace(/[.,)]$/, '');
+    log("🌐", `Opening live target page: ${targetUrl}...`, "cyan");
     try {
-      await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 12000 });
-    } catch {}
+      await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 30000 });
+    } catch {
+      try { await page.goto(targetUrl, { waitUntil: "commit", timeout: 15000 }); } catch {}
+    }
   }
 
   await injectOverlay(page);
