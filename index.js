@@ -1044,8 +1044,18 @@ ${C.green}╔══════════════════════�
   });
   const page = context.pages()[0] || await context.newPage();
   try { await page.bringToFront(); } catch {}
+
+  // ⚡ Immediately navigate to initial target URL if specified in goal (no empty about:blank pause!)
+  const initialUrlMatch = goal.match(/https?:\/\/[^\s,)]+/i);
+  if (initialUrlMatch) {
+    const targetUrl = initialUrlMatch[0].replace(/[.,]$/, '');
+    try {
+      await page.goto(targetUrl, { waitUntil: "domcontentloaded", timeout: 12000 });
+    } catch {}
+  }
+
   await injectOverlay(page);
-  await updateOverlayStatus(page, "🧠 KAIRO Planning workflow...");
+  await updateOverlayStatus(page, "🧠 KAIRO Planning & Auto-Filling...");
 
   log("📋", "Planning workflow...", "cyan");
   narrate("Planning your workflow now.");

@@ -344,12 +344,13 @@ ${J.cyan}╰──────────────────────�
   top5.forEach((job, idx) => {
     const score = job.match_score || 88;
     const scoreBar = "█".repeat(Math.round(score / 10)) + "░".repeat(10 - Math.round(score / 10));
-    console.log(`  ${J.bright}${J.cyan}[#${idx + 1}]${J.reset} ${J.bright}${job.title}${J.reset} ${J.dim}@${J.reset} ${J.yellow}${J.bright}${job.company}${J.reset} ${J.dim}(Source: ${job.source})${J.reset}`);
-    console.log(`      ${J.green}Match Score:${J.reset} ${J.bright}${score}%${J.reset} [${J.magenta}${scoreBar}${J.reset}]  ${J.dim}Rating: ${job.company_rating || 4.8} ★ | Openings: ${job.open_positions || 2}${J.reset}`);
-    console.log(`      📍 ${J.dim}Location:${J.reset} ${job.location} (${job.remote_type}) | 💰 ${J.green}${job.salary_range}${J.reset}`);
-    console.log(`      ⏳ ${J.yellow}Deadline:${J.reset} ${job.application_deadline} | 👥 ${J.dim}Applicants:${J.reset} ${job.num_applicants || "N/A"}`);
-    console.log(`      🛠️  ${J.dim}Requirements:${J.reset} ${(job.requirements || []).join(", ")}`);
-    console.log(`      💡 ${J.cyan}Why Suitable:${J.reset} ${J.dim}${job.why_suitable}${J.reset}`);
+    console.log(`  ${J.bright}${J.cyan}[#${idx + 1}]${J.reset} ${J.bright}${job.title}${J.reset} ${J.dim}@${J.reset} ${J.yellow}${J.bright}${job.company}${J.reset} ${J.dim}(${job.source})${J.reset}`);
+    console.log(`      ${J.green}Match:${J.reset} ${J.bright}${score}%${J.reset} [${J.magenta}${scoreBar}${J.reset}] ${J.dim}★ ${job.company_rating || 4.8} (${job.open_positions || 2} openings)${J.reset}`);
+    console.log(`      📍 ${J.dim}Location:${J.reset} ${job.location} (${job.remote_type})`);
+    console.log(`      💰 ${J.dim}Salary:${J.reset} ${J.green}${job.salary_range}${J.reset}`);
+    console.log(`      ⏳ ${J.dim}Deadline:${J.reset} ${job.application_deadline} | 👥 ${job.num_applicants || "N/A"} applicants`);
+    console.log(`      🛠️  ${J.dim}Skills:${J.reset} ${(job.requirements || []).slice(0, 5).join(", ")}`);
+    console.log(`      💡 ${J.cyan}Fit:${J.reset} ${J.dim}${job.why_suitable}${J.reset}`);
     console.log();
   });
 
