@@ -333,23 +333,23 @@ export async function renderJobDashboard() {
   const top5 = await getDailyTop5Jobs(profile.desired_role || "Software Engineer", profile.city || "Remote");
 
   console.log(`
-${J.cyan}┌──────────────────────────────────────────────────────────────────────────┐${J.reset}
-${J.cyan}│${J.reset}  ${J.bright}${J.yellow}💼  K A I R O  —  AI Job Discovery & Application Agent Dashboard${J.reset}     ${J.cyan}│${J.reset}
+${J.cyan}╭──────────────────────────────────────────────────────────────────────────╮${J.reset}
+${J.cyan}│${J.reset}  ${J.bright}${J.cyan}💼  K A I R O  —  AI Job Discovery & Application Agent Dashboard${J.reset}     ${J.cyan}│${J.reset}
 ${J.cyan}│${J.reset}  ${J.dim}17-Field Schema • 7-Signal Match Scoring • Live Playwright Visual Apply${J.reset}  ${J.cyan}│${J.reset}
-${J.cyan}└──────────────────────────────────────────────────────────────────────────┘${J.reset}
+${J.cyan}╰──────────────────────────────────────────────────────────────────────────╯${J.reset}
 `);
 
-  console.log(`  ${J.green}${J.bright}🌟 TODAY'S TOP 5 RANKED MATCHES:${J.reset}\n`);
+  console.log(`  ${J.cyan}${J.bright}🌟 TODAY'S TOP 5 RANKED MATCHES:${J.reset}\n`);
 
   top5.forEach((job, idx) => {
     const score = job.match_score || 88;
     const scoreBar = "█".repeat(Math.round(score / 10)) + "░".repeat(10 - Math.round(score / 10));
-    console.log(`  ${J.bgCyan}${J.bright} #${idx + 1} ${J.reset} ${J.cyan}${J.bright}${job.title}${J.reset} ${J.dim}@${J.reset} ${J.yellow}${J.bright}${job.company}${J.reset} ${J.dim}(Source: ${job.source})${J.reset}`);
-    console.log(`     ${J.green}Match Score:${J.reset} ${J.bright}${score}%${J.reset} [${J.magenta}${scoreBar}${J.reset}]  ${J.dim}Rating: ${job.company_rating || 4.8} ★ | Openings: ${job.open_positions || 2}${J.reset}`);
-    console.log(`     📍 ${J.dim}Location:${J.reset} ${job.location} (${job.remote_type}) | 💰 ${J.green}${job.salary_range}${J.reset}`);
-    console.log(`     ⏳ ${J.yellow}Deadline:${J.reset} ${job.application_deadline} | 👥 ${J.dim}Applicants:${J.reset} ${job.num_applicants || "N/A"}`);
-    console.log(`     🛠️  ${J.dim}Requirements:${J.reset} ${(job.requirements || []).join(", ")}`);
-    console.log(`     💡 ${J.cyan}Why Suitable:${J.reset} ${J.dim}${job.why_suitable}${J.reset}`);
+    console.log(`  ${J.bright}${J.cyan}[#${idx + 1}]${J.reset} ${J.bright}${job.title}${J.reset} ${J.dim}@${J.reset} ${J.yellow}${J.bright}${job.company}${J.reset} ${J.dim}(Source: ${job.source})${J.reset}`);
+    console.log(`      ${J.green}Match Score:${J.reset} ${J.bright}${score}%${J.reset} [${J.magenta}${scoreBar}${J.reset}]  ${J.dim}Rating: ${job.company_rating || 4.8} ★ | Openings: ${job.open_positions || 2}${J.reset}`);
+    console.log(`      📍 ${J.dim}Location:${J.reset} ${job.location} (${job.remote_type}) | 💰 ${J.green}${job.salary_range}${J.reset}`);
+    console.log(`      ⏳ ${J.yellow}Deadline:${J.reset} ${job.application_deadline} | 👥 ${J.dim}Applicants:${J.reset} ${job.num_applicants || "N/A"}`);
+    console.log(`      🛠️  ${J.dim}Requirements:${J.reset} ${(job.requirements || []).join(", ")}`);
+    console.log(`      💡 ${J.cyan}Why Suitable:${J.reset} ${J.dim}${job.why_suitable}${J.reset}`);
     console.log();
   });
 
@@ -361,11 +361,11 @@ ${J.cyan}└──────────────────────�
     console.log();
   }
 
-  console.log(`  ${J.bright}Actions:${J.reset}`);
-  console.log(`  ${J.cyan}1-5${J.reset} : Select job to view AI Cover Letter & Stage Application with Confirmation`);
-  console.log(`  ${J.cyan}S${J.reset}   : Save selected job to saved list`);
-  console.log(`  ${J.cyan}R${J.reset}   : Search new job title / refresh`);
-  console.log(`  ${J.cyan}M${J.reset}   : Return to Main Menu\n`);
+  console.log(`  ${J.bright}Dashboard Actions:${J.reset}`);
+  console.log(`   ${J.cyan}[1-5]${J.reset} : Select job to view AI Cover Letter & Stage Live Application`);
+  console.log(`   ${J.cyan}[ S ]${J.reset} : Save selected job match to saved list`);
+  console.log(`   ${J.cyan}[ R ]${J.reset} : Refresh search target title & location`);
+  console.log(`   ${J.cyan}[ M ]${J.reset} : Return to Main Menu\n`);
 
   const choice = await askInput(`  ${J.bright}Enter choice (1-5, S, R, M):${J.reset} `);
   const choiceUpper = choice.toUpperCase();
@@ -435,15 +435,13 @@ export async function handleJobSelection(job) {
     profile = loadProfile() || {};
   }
   console.log(`
-${J.bgMag}${J.bright}                                                                    ${J.reset}
-${J.bgMag}${J.bright}   📄  Selected Job: ${job.title} (${job.company})                     ${J.reset}
-${J.bgMag}${J.bright}                                                                    ${J.reset}
+${J.cyan}╭──────────────────────────────────────────────────────────────────────────╮${J.reset}
+${J.cyan}│${J.reset}  ${J.bright}${J.cyan}📄  Selected Job: ${job.title} @ ${job.company}${J.reset}
+${J.cyan}╰──────────────────────────────────────────────────────────────────────────╯${J.reset}
 
   ${J.cyan}Company:${J.reset} ${job.company} (${job.company_rating || 4.8} ★) | Source: ${job.source}
-  ${J.cyan}Location:${J.reset} ${job.location} (${job.remote_type})
-  ${J.cyan}Salary:${J.reset} ${job.salary_range}
-  ${J.cyan}Deadline:${J.reset} ${job.application_deadline}
-  ${J.cyan}Match Score:${J.reset} ${J.green}${job.match_score}%${J.reset}
+  ${J.cyan}Location:${J.reset} ${job.location} (${job.remote_type}) | 💰 ${J.green}${job.salary_range}${J.reset}
+  ${J.cyan}Deadline:${J.reset} ${job.application_deadline} | Match Score: ${J.green}${job.match_score}%${J.reset}
 
   ${J.yellow}💡 AI Match Explanation:${J.reset}
   ${J.dim}${job.why_suitable}${J.reset}
@@ -455,12 +453,12 @@ ${J.bgMag}${J.bright}                                                           
 ${(job.resume_bullet_rewrites || []).map(b => `  • ${b}`).join("\n")}
 `);
 
-  console.log(`  ${J.bright}Application Workflow (Human-Gated Mode):${J.reset}`);
-  console.log(`   1 🚀 Open Application Page & Auto-Fill (Submission Gated)`);
-  console.log(`   2 🤖 Run 9-Stage Prompt Library Pipeline (Fact-Checked & ATS Scored)`);
-  console.log(`   3 📋 Copy Tailored Resume / Cover Letter Prompt for Manual Use`);
-  console.log(`   4 💾 Save Job to Saved List`);
-  console.log(`   5 🔙 Back to Dashboard\n`);
+  console.log(`  ${J.bright}Application Actions (Human-Gated Mode):${J.reset}`);
+  console.log(`   ${J.cyan}[1]${J.reset} 🚀 Live Playwright Browser Apply & Form Auto-Fill (Submission Gated)`);
+  console.log(`   ${J.cyan}[2]${J.reset} 🤖 Run 9-Stage Tailoring Pipeline (Fact-Checked & ATS Scored)`);
+  console.log(`   ${J.cyan}[3]${J.reset} 📋 Copy Tailored Resume & Cover Letter Prompt for Manual Use`);
+  console.log(`   ${J.cyan}[4]${J.reset} 💾 Save Job to Saved List`);
+  console.log(`   ${J.cyan}[5]${J.reset} 🔙 Return to Job Dashboard\n`);
 
   const act = await askInput(`  ${J.bright}Choose action (1-5):${J.reset} `);
 

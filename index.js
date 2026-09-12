@@ -105,44 +105,42 @@ async function showMenu() {
   }
 
   console.log(`
-${C.cyan}┌──────────────────────────────────────────────────────────────────────────┐${C.r}
-${C.cyan}│${C.r}  ${C.b}${C.yellow}🤖  K A I R O  —  Autonomous Resume & Job Application Agent${C.r}         ${C.cyan}│${C.r}
+${C.cyan}╭──────────────────────────────────────────────────────────────────────────╮${C.r}
+${C.cyan}│${C.r}  ${C.b}${C.cyan}🤖  K A I R O  —  Autonomous Resume & Job Application Agent${C.r}         ${C.cyan}│${C.r}
 ${C.cyan}│${C.r}  ${C.d}Precision Timing (Kairos) • 9-Stage Tailoring • Fact-Checked Guardrails${C.r} ${C.cyan}│${C.r}
-${C.cyan}└──────────────────────────────────────────────────────────────────────────┘${C.r}
+${C.cyan}╰──────────────────────────────────────────────────────────────────────────╯${C.r}
 `);
 
   // Show learned workflows
   const learned = listLearnedWorkflows();
   if (learned.length > 0) {
-    console.log(`  ${C.green}${C.b}💾 LEARNED WORKFLOWS (Sub-200ms DOM Replay, 0 Tokens):${C.r}`);
+    console.log(`  ${C.green}${C.b}⚡ LEARNED WORKFLOWS (Sub-200ms DOM Replay, 0 LLM Tokens):${C.r}`);
     learned.forEach((w, i) => console.log(`     ${C.cyan}${i + 1}.${C.r} ${C.d}${w}${C.r}`));
     console.log();
   }
 
-  console.log(`  ${C.b}${C.magenta}🎯 TAILORED AGENT OPTIONS & WORKFLOWS:${C.r}\n`);
+  console.log(`  ${C.cyan}─── 💼 JOB DISCOVERY & RESUME TAILORING ───────────────────────────────────${C.r}`);
+  console.log(`  ${C.b}${C.cyan}[1]${C.r} ${C.b}Job Discovery & Daily Top 5 Dashboard${C.r}`);
+  console.log(`      ${C.d}17-field schema, 7-signal match score & live Playwright visual apply${C.r}`);
+  console.log(`  ${C.b}${C.cyan}[2]${C.r} ${C.b}9-Stage Resume Tailoring Pipeline${C.r}`);
+  console.log(`      ${C.d}Non-fabrication resume draft, ATS score (0-100) & audit change report${C.r}`);
+  console.log(`  ${C.b}${C.cyan}[3]${C.r} ${C.b}Recruiter Outreach & Cold Mailing Assistant${C.r}`);
+  console.log(`      ${C.d}Live Playwright webmail draft composition & direct SMTP email dispatch${C.r}\n`);
 
-  console.log(`  ${C.yellow}─── 💼 JOB DISCOVERY & RESUME TAILORING ───────────────────────────────────${C.r}`);
-  console.log(`  ${C.bgBlue}${C.b} 1 ${C.r} ${C.blue}${C.b}💼  Job Discovery & Daily Top 5 Dashboard${C.r}`);
-  console.log(`     ${C.d}↳ 17-field schema, 7-Signal match score & live visual browser discovery${C.r}`);
-  console.log(`  ${C.bgMag}${C.b} 2 ${C.r} ${C.magenta}${C.b}🤖  9-Stage Resume Tailoring Pipeline${C.r}`);
-  console.log(`     ${C.d}↳ Non-fabrication resume draft, ATS score (0-100) & audit change report${C.r}`);
-  console.log(`  ${C.bgCyan}${C.b} 3 ${C.r} ${C.cyan}${C.b}📧  Recruiter Outreach & Cold Mailing Assistant${C.r}`);
-  console.log(`     ${C.d}↳ Live Playwright webmail draft composition & direct SMTP email dispatch${C.r}\n`);
+  console.log(`  ${C.cyan}─── 👤 CANDIDATE PROFILE & VOICE ASSISTANT ────────────────────────────────${C.r}`);
+  console.log(`  ${C.b}${C.cyan}[4]${C.r} ${C.b}Candidate Profile & Verified Evidence Setup${C.r}`);
+  console.log(`      ${C.d}Candidate skills, experience years, verified projects & contact info${C.r}`);
+  console.log(`  ${C.b}${C.cyan}[5]${C.r} ${C.b}KAIRO JARVIS Hands-Free Voice Mode${C.r}`);
+  console.log(`      ${C.d}Activate "Hello KAIRO" wake-word or tap 3x Spacebar for voice control${C.r}`);
+  console.log(`  ${C.b}${C.cyan}[6]${C.r} ${C.b}JARVIS Voice Acoustic Calibration${C.r}`);
+  console.log(`      ${C.d}Calibrate pitch, speech rate & acoustic voice profile${C.r}\n`);
 
-  console.log(`  ${C.yellow}─── 👤 CANDIDATE PROFILE & VOICE ASSISTANT ────────────────────────────────${C.r}`);
-  console.log(`  ${C.bgMag}${C.b} 4 ${C.r} ${C.magenta}${C.b}👤  Candidate Profile & Verified Evidence Setup${C.r}`);
-  console.log(`     ${C.d}↳ Candidate skills, experience years, verified projects & contact info${C.r}`);
-  console.log(`  ${C.bgCyan}${C.b} 5 ${C.r} ${C.cyan}${C.b}🎤  KAIRO JARVIS Hands-Free Voice Mode${C.r}`);
-  console.log(`     ${C.d}↳ Activate "Hello KAIRO" wake-word or tap 3x Spacebar for voice control${C.r}`);
-  console.log(`  ${C.bgMag}${C.b} 6 ${C.r} ${C.magenta}${C.b}🎙️  JARVIS Voice Acoustic Calibration${C.r}`);
-  console.log(`     ${C.d}↳ Calibrate pitch, speech rate & acoustic voice profile${C.r}\n`);
-
-  console.log(`  ${C.yellow}─── ⚡ AUTOMATION & REPLAY ENGINE ──────────────────────────────────────────${C.r}`);
-  console.log(`  ${C.bgBlue}${C.b} 7 ${C.r} ${C.blue}${C.b}⚡  Custom Task / General Webcmd Workflow${C.r}`);
-  console.log(`     ${C.d}↳ Execute any custom browser automation goal with live visual playback${C.r}`);
+  console.log(`  ${C.cyan}─── ⚡ AUTOMATION & REPLAY ENGINE ──────────────────────────────────────────${C.r}`);
+  console.log(`  ${C.b}${C.cyan}[7]${C.r} ${C.b}Custom Task / General Webcmd Workflow${C.r}`);
+  console.log(`      ${C.d}Execute any custom browser automation goal with live visual playback${C.r}`);
   if (learned.length > 0) {
-    console.log(`  ${C.bgGreen}${C.b} 8 ${C.r} ${C.green}${C.b}🔄  Replay Learned Workflow${C.r}`);
-    console.log(`     ${C.d}↳ Sub-200ms DOM replay engine (0 LLM tokens consumed)${C.r}`);
+    console.log(`  ${C.b}${C.green}[8]${C.r} ${C.b}Replay Learned Workflow${C.r}`);
+    console.log(`      ${C.d}Sub-200ms DOM replay engine (0 LLM tokens consumed)${C.r}`);
   }
   console.log();
 
