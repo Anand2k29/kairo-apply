@@ -3,9 +3,9 @@
 > **Agentic AI Hackathon** | **Tech Zephyr 4.0 | IIT Bhubaneswar**
 > *"Build AI Systems That Act, Adapt, and Execute."*
 > **GitHub Repository**: [https://github.com/Anand2k29/kairo-apply](https://github.com/Anand2k29/kairo-apply)
-> Powered by **webcmd** architecture & **KAIRO (Kairos Opportune Timing Assistant — JARVIS Voice Persona)** — *"Hello KAIRO"*
+> Powered by **webcmd** architecture & **KAIRO (Kairos Opportune Timing Assistant — Female Voice Persona)** — *"Hello KAIRO"*
 
-**KAIRO** (`kairo-apply`) — evoking *Kairos* (the right, opportune moment for job applications and execution) — is a state-of-the-art autonomous browser agent built on the **webcmd** autonomous web automation engine. It combines JARVIS voice-activated AI (**KAIRO**), multi-tier LLM waterfalls (**Ollama** + **claude-code-for-free** + **Gemini** + **OpenRouter** + **Free Models Cascade**), an RL Q-value trajectory cache, an AI Job Discovery Assistant with the **9-Stage Resume Tailoring & Fact-Checking Pipeline**, and live visual Playwright Chromium browser execution.
+**KAIRO** (`kairo-apply`) — evoking *Kairos* (the right, opportune moment for job applications and execution) — is a state-of-the-art autonomous browser agent built on the **webcmd** autonomous web automation engine. It combines female voice-activated AI (**KAIRO** - `Microsoft Zira`), multi-tier LLM waterfalls (**Ollama** + **claude-code-for-free** + **Gemini** + **OpenRouter** + **Free Models Cascade**), an RL Q-value trajectory cache, an AI Job Discovery Assistant with the **9-Stage Resume Tailoring & Fact-Checking Pipeline**, and live visual Playwright Chromium browser execution.
 
 ---
 
@@ -15,8 +15,8 @@
 Navigating the web for daily repetitive actions — such as scouring job portals at opportune moments, tailoring resumes with 100% factual integrity, auto-applying to openings, and sending recruiter outreach — is tedious, fragmented, and time-consuming. Existing browser automation tools either rely entirely on high-cost cloud LLM tokens for every execution or lack context-aware voice control, local privacy, and self-learning trajectory memory.
 
 ### ⚙️ How We Went About It
-We built **kairo-apply** on top of the **webcmd** autonomous web architecture and **KAIRO (JARVIS Voice Persona)**:
-1. **Continuous Voice Engine (KAIRO - JARVIS Persona)**: Listens asynchronously for *"Hello KAIRO"* or **3x rapid spacebar taps** globally on Windows to launch voice-guided browser automation with a smooth, suave male voice.
+We built **kairo-apply** on top of the **webcmd** autonomous web architecture and **KAIRO (Female Voice Persona)**:
+1. **Continuous Voice Engine (KAIRO - Female Voice Persona)**: Listens asynchronously for *"Hello KAIRO"* or **3x rapid spacebar taps** globally on Windows to launch voice-guided browser automation with a smooth, articulate female voice (`Microsoft Zira`).
 2. **9-Stage Prompt Library & Fact-Checking Guardrail**: 9 model-agnostic prompt templates (`1_jd_parser.txt` through `9_change_report.txt`) ensuring non-fabrication of candidate evidence and full audit logging (`run_trace.json`).
 3. **Fuzzy Q-Cache Trajectory Engine**: Uses Reinforcement Learning Q-values (`workflow_memory.json`) to cache successful browser paths. Subsequent runs execute at sub-200ms Playwright DOM speed using **0 LLM Tokens**, with intelligent entity validation and dynamic parameter substitution so queries (*e.g., milk vs. eggs*) never collide.
 4. **Multi-Tier Rate-Limit-Resistant LLM Waterfall**: Cascades seamlessly from Local Claude (`claude-code-for-free`) → Local Ollama (`llama3.2`) → Gemini API → OpenRouter Free Models → Zero-API DOM Heuristics with exponential backoff & 0-token local fallback JSONs.

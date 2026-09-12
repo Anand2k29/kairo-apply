@@ -66,11 +66,11 @@ function getVoiceConfig() {
   const vp = loadVoiceProfile() || {};
   return {
     rate: vp.speech_rate ?? 0,          // -10 to +10
-    pitch: vp.speech_pitch || "-2st",   // -5st to +5st (e.g. -2st for smooth JARVIS tone)
+    pitch: vp.speech_pitch || "+1st",   // Warm, clear female tone
   };
 }
 
-// ─── TTS: KAIRO Speaks (PowerShell EncodedCommand SSML Voice Modulation) ─
+// ─── TTS: KAIRO Speaks (PowerShell EncodedCommand Female Voice Engine) ───
 export function speak(text) {
   if (!_voiceAvailable) return;
   const cleaned = cleanForSpeech(text);
@@ -88,7 +88,7 @@ $s.Volume = 100;
 try {
     foreach ($v in $s.GetInstalledVoices()) {
         $n = $v.VoiceInfo.Name.ToLower();
-        if ($n.Contains("david") -or $n.Contains("george") -or $n.Contains("mark") -or $v.VoiceInfo.Gender -eq [System.Speech.Synthesis.VoiceGender]::Male) {
+        if ($n.Contains("zira") -or $n.Contains("hazel") -or $n.Contains("eva") -or $n.Contains("catherine") -or $n.Contains("susan") -or $n.Contains("heera") -or $v.VoiceInfo.Gender -eq [System.Speech.Synthesis.VoiceGender]::Female) {
             $s.SelectVoice($v.VoiceInfo.Name);
             break;
         }
@@ -110,7 +110,7 @@ try {
   } catch { /* silent fallback */ }
 }
 
-// Non-blocking speak (async fire-and-forget — zero terminal lag with SSML voice modulation)
+// Non-blocking speak (async fire-and-forget — zero terminal lag with female voice synthesis)
 export function speakAsync(text) {
   if (!_voiceAvailable) return;
   const cleaned = cleanForSpeech(text);
@@ -128,7 +128,7 @@ $s.Volume = 100;
 try {
     foreach ($v in $s.GetInstalledVoices()) {
         $n = $v.VoiceInfo.Name.ToLower();
-        if ($n.Contains("david") -or $n.Contains("george") -or $n.Contains("mark") -or $v.VoiceInfo.Gender -eq [System.Speech.Synthesis.VoiceGender]::Male) {
+        if ($n.Contains("zira") -or $n.Contains("hazel") -or $n.Contains("eva") -or $n.Contains("catherine") -or $n.Contains("susan") -or $n.Contains("heera") -or $v.VoiceInfo.Gender -eq [System.Speech.Synthesis.VoiceGender]::Female) {
             $s.SelectVoice($v.VoiceInfo.Name);
             break;
         }
