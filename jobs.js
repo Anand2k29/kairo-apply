@@ -435,7 +435,7 @@ ${(job.resume_bullet_rewrites || []).map(b => `  • ${b}`).join("\n")}
 
   console.log(`  ${J.bright}Application Workflow (Human-Gated Mode):${J.reset}`);
   console.log(`   1 🚀 Open Application Page & Auto-Fill (Submission Gated)`);
-  console.log(`   2 🤖 Run PS11 9-Stage Prompt Library Pipeline (Fact-Checked & ATS Scored)`);
+  console.log(`   2 🤖 Run 9-Stage Prompt Library Pipeline (Fact-Checked & ATS Scored)`);
   console.log(`   3 📋 Copy Tailored Resume / Cover Letter Prompt for Manual Use`);
   console.log(`   4 💾 Save Job to Saved List`);
   console.log(`   5 🔙 Back to Dashboard\n`);
@@ -451,11 +451,11 @@ ${(job.resume_bullet_rewrites || []).map(b => `  • ${b}`).join("\n")}
   }
 
   if (act === "2") {
-    console.log(`\n  ${J.cyan}🤖 Executing PS11 9-Stage Prompt Library Pipeline...${J.reset}\n`);
+    console.log(`\n  ${J.cyan}🤖 Executing 9-Stage Prompt Library Tailoring Pipeline...${J.reset}\n`);
     try {
       const result = await runResumePipeline(job, profile);
       console.log(`\n${J.bgGreen}${J.bright}                                                                    ${J.reset}`);
-      console.log(`${J.bgGreen}${J.bright}   ✅  PS11 Pipeline Complete & Fact-Checked Output                 ${J.reset}`);
+      console.log(`${J.bgGreen}${J.bright}   ✅  9-Stage Pipeline Complete & Fact-Checked Output             ${J.reset}`);
       console.log(`${J.bgGreen}${J.bright}                                                                    ${J.reset}\n`);
 
       console.log(`  ${J.cyan}ATS Coverage Score:${J.reset} ${J.green}${result.atsEvaluation?.ats_keyword_coverage_score || 92}%${J.reset} | ${J.cyan}Relevance Score:${J.reset} ${J.green}${result.atsEvaluation?.relevance_score || 90}%${J.reset}`);
@@ -482,7 +482,7 @@ ${(job.resume_bullet_rewrites || []).map(b => `  • ${b}`).join("\n")}
       const confirm = await askInput(`  Choose option (1-2): `);
       if (confirm === "1") {
         sendApplicationEmail({ job, coverLetter: result.coverLetter, tailoredResume: result.tailoredResume, candidateEmail: profile.email });
-        recordAppliedJob(job, "Applied via PS11 Pipeline");
+        recordAppliedJob(job, "Applied via Tailored Pipeline");
         console.log(`  ${J.green}✅ Application recorded!${J.reset}`);
       }
     } catch (err) {

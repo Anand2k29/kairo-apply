@@ -55,16 +55,20 @@ function getOpenRouterKeys() {
   ].filter(Boolean);
 }
 
-// OpenRouter models to try in order (active high-speed models prioritized)
+// OpenRouter models to try in order (active high-speed & free models prioritized)
 const OPENROUTER_MODELS = [
+  "google/gemini-2.0-flash-lite-001:free",
+  "google/gemini-2.0-flash-exp:free",
+  "meta-llama/llama-3.3-70b-instruct:free",
+  "deepseek/deepseek-r1:free",
+  "qwen/qwen-2.5-7b-instruct:free",
+  "mistralai/mistral-7b-instruct:free",
   "deepseek/deepseek-chat",
   "google/gemini-2.0-flash-001",
   "meta-llama/llama-3.3-70b-instruct",
   "qwen/qwen-2.5-7b-instruct",
   "deepseek/deepseek-r1-distill-llama-70b",
   "mistralai/mistral-7b-instruct",
-  "google/gemini-flash-1.5",
-  "microsoft/phi-3-medium-128k-instruct",
 ];
 
 // Gemini models to cycle through per key (active & reliable endpoints)
@@ -168,56 +172,68 @@ async function tryGemini(prompt, systemPrompt, options) {
         parts.push({ inline_data: { mime_type: "image/png", data: options.imageBase64 } });
       }
 
-      try {
-        log("🤖", `[Tier 2] Gemini ${model} (key ${tag})...`, "dim");
-        const resp = await axios.post(url, {
-          contents: [{ parts }],
-          generationConfig: { temperature: options.temperature ?? 0 },
-        }, { timeout: options.timeout || 6000 }); // ⚡ Fast 6s timeout
+      let attempts = 0;
+      const maxAttempts = 3;
+      while (attempts < maxAttempts) {
+        attempts++;
+        try {
+          log("🤖", `[Tier 2] Gemini ${model} (key ${tag}${attempts > 1 ? `, retry ${attempts}` : ""})...`, "dim");
+          const resp = await axios.post(url, {
+            contents: [{ parts }],
+            generationConfig: { temperature: options.temperature ?? 0 },
+          }, { timeout: options.timeout || 6000 });
 
-        const text = resp.data.candidates?.[0]?.content?.parts?.[0]?.text;
-        if (!text) throw new Error("Empty response from Gemini");
-        log("✅", `[Tier 2] Gemini ${model} (key ${tag}) responded`, "green");
-        return text;
-      } catch (err) {
-        const lastError = err.response?.data?.error?.message || err.message;
-        const status = err.response?.status;
-        const headers = err.response?.headers || {};
+          const text = resp.data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (!text) throw new Error("Empty response from Gemini");
+          log("✅", `[Tier 2] Gemini ${model} (key ${tag}) responded`, "green");
+          return text;
+        } catch (err) {
+          const lastError = err.response?.data?.error?.message || err.message;
+          const status = err.response?.status;
+          const headers = err.response?.headers || {};
 
-        const retryAfterHeader = headers["retry-after"] || headers["x-ratelimit-reset"];
-        const retryMatch = typeof lastError === "string" && lastError.match(/retry in ([\d.]+)s/i);
-        let cooldownSec = 45;
-        if (retryAfterHeader) {
-          cooldownSec = parseInt(retryAfterHeader, 10) || 45;
-        } else if (retryMatch) {
-          cooldownSec = Math.ceil(parseFloat(retryMatch[1])) + 2;
-        }
+          const retryAfterHeader = headers["retry-after"] || headers["x-ratelimit-reset"];
+          const retryMatch = typeof lastError === "string" && lastError.match(/retry in ([\d.]+)s/i);
+          let cooldownSec = 20;
+          if (retryAfterHeader) {
+            cooldownSec = parseInt(retryAfterHeader, 10) || 20;
+          } else if (retryMatch) {
+            cooldownSec = Math.ceil(parseFloat(retryMatch[1])) + 2;
+          }
 
-        if (status === 400 || status === 403 || (typeof lastError === "string" && (
-          lastError.includes("API key not valid") ||
-          lastError.includes("API_KEY_INVALID") ||
-          lastError.includes("invalid API key")
-        ))) {
-          console.log(`  ⚠️ Invalid Gemini API key ${tag} → disabling key...`);
-          setCooldown(providerKeyId, 86400);
+          if (status === 400 || status === 403 || (typeof lastError === "string" && (
+            lastError.includes("API key not valid") ||
+            lastError.includes("API_KEY_INVALID") ||
+            lastError.includes("invalid API key")
+          ))) {
+            console.log(`  ⚠️ Invalid Gemini API key ${tag} → disabling key...`);
+            setCooldown(providerKeyId, 86400);
+            break;
+          }
+
+          if (status === 429 || (typeof lastError === "string" && (
+            lastError.includes("Quota exceeded") ||
+            lastError.includes("rate-limits") ||
+            lastError.includes("RESOURCE_EXHAUSTED") ||
+            lastError.includes("429") ||
+            lastError.includes("TOO_MANY_REQUESTS")
+          ))) {
+            if (attempts < maxAttempts) {
+              const backoff = attempts * 1000;
+              console.log(`  ⏳ 429 Rate Limit on Gemini ${model} → auto-backoff ${backoff}ms (retry ${attempts}/${maxAttempts})...`);
+              await sleep(backoff);
+              continue;
+            } else {
+              console.log(`  ⏳ 429 Rate Limit on Gemini key ${tag} (${model}) after retries → setting ${cooldownSec}s cooldown...`);
+              setCooldown(providerKeyId, cooldownSec);
+              setCooldown(modelKeyId, cooldownSec);
+              await sleep(200);
+              break;
+            }
+          }
+          console.log(`  ⚠️ Gemini ${model} (key ${tag}) error: ${typeof lastError === "string" ? lastError.slice(0, 80) : lastError}`);
           break;
         }
-
-        if (status === 429 || (typeof lastError === "string" && (
-          lastError.includes("Quota exceeded") ||
-          lastError.includes("rate-limits") ||
-          lastError.includes("RESOURCE_EXHAUSTED") ||
-          lastError.includes("429") ||
-          lastError.includes("TOO_MANY_REQUESTS")
-        ))) {
-          console.log(`  ⏳ 429 Rate Limit on Gemini key ${tag} (${model}) → setting ${cooldownSec}s cooldown & switching key/tier...`);
-          setCooldown(providerKeyId, cooldownSec);
-          setCooldown(modelKeyId, cooldownSec);
-          await sleep(300);
-          break; // Immediately rotate to next key / tier
-        }
-        console.log(`  ⚠️ Gemini ${model} (key ${tag}) error: ${typeof lastError === "string" ? lastError.slice(0, 80) : lastError}`);
-        continue;
       }
     }
   }
@@ -266,8 +282,8 @@ async function tryOpenRouter(prompt, systemPrompt, options) {
           headers: {
             "Authorization": `Bearer ${apiKey}`,
             "Content-Type": "application/json",
-            "HTTP-Referer": "https://slabroute.app",
-            "X-Title": "SlabRoute Browser Agent",
+            "HTTP-Referer": "https://kairo-apply.app",
+            "X-Title": "KAIRO Resume & Application Agent",
           },
           timeout: options.timeout || 45000,
         });
@@ -282,7 +298,7 @@ async function tryOpenRouter(prompt, systemPrompt, options) {
         const headers = err.response?.headers || {};
 
         const retryAfterHeader = headers["retry-after"] || headers["x-ratelimit-reset"];
-        const cooldownSec = parseInt(retryAfterHeader, 10) || 30;
+        const cooldownSec = parseInt(retryAfterHeader, 10) || 20;
 
         if (status === 429 || (typeof lastError === "string" && (
           lastError.includes("rate") ||
@@ -292,7 +308,7 @@ async function tryOpenRouter(prompt, systemPrompt, options) {
         ))) {
           setCooldown(keyId, cooldownSec);
           console.log(`  ⏳ 429 Rate limit: OpenRouter ${model} (key ${tag}) → cooldown ${cooldownSec}s. Trying next model...`);
-          await sleep(300);
+          await sleep(200);
           continue;
         }
         console.log(`  ⚠️ OpenRouter ${model} error: ${typeof lastError === "string" ? lastError.slice(0, 80) : lastError}`);
@@ -322,11 +338,17 @@ export async function callGemini(prompt, systemPrompt = "", options = {}) {
   const ollamaResult = await tryOllama(prompt, systemPrompt, options);
   if (ollamaResult) return ollamaResult;
 
+  // Option to return explicit fallback JSON if provided
+  if (options.fallbackJSON) {
+    log("⚡", "Rate limit / quota reached on all API keys — using smart structured fallback (0 tokens used)...", "yellow");
+    return typeof options.fallbackJSON === "object" ? JSON.stringify(options.fallbackJSON) : options.fallbackJSON;
+  }
+
   // All tiers exhausted due to 429 / Rate Limits
   const totalKeys = getGeminiKeys().length + getOpenRouterKeys().length;
   const rateErr = new Error(
     `HTTP 429 / Rate Limit: All LLM tiers exhausted (${totalKeys} keys tried). ` +
-    `Switching to Pure Playwright DOM Engine (0 Tokens Used).`
+    `Switching to Pure DOM Engine / Local Fallback.`
   );
   rateErr.statusCode = 429;
   rateErr.isRateLimit = true;

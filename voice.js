@@ -1,7 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────
 // voice.js — KAIRO (Kairos Opportune Timing Assistant — JARVIS Voice Persona)
-// Voice-activated assistant using Windows PowerShell System.Speech
-// Zero external npm dependencies — pure native Windows SAPI
+// Voice-activated assistant using Windows System.Speech SpeechSynthesizer
+// Zero external npm dependencies — ultra-low latency & zero terminal lag
 // ─────────────────────────────────────────────────────────────────────
 
 import { execSync, exec, spawn } from "child_process";
@@ -13,7 +13,6 @@ import axios from "axios";
 // ─── Config ──────────────────────────────────────────────────────────
 const SPEECH_RATE = 0;            // 0 = calm, suave, articulate JARVIS pace
 const DEFAULT_LISTEN_SEC = 8;     // Extended STT duration for relaxed speaking
-const CONFIDENCE_THRESHOLD = 0.20; // Confidence threshold for STT
 const TEMP_DIR = path.resolve("./.kairo_temp");
 
 let _voiceAvailable = null;
@@ -47,18 +46,15 @@ function cleanForSpeech(text) {
     .slice(0, 450);
 }
 
-function escapePS(text) {
-  return text.replace(/'/g, "''").replace(/`/g, "``");
-}
-
 // ─── Check Voice Availability ────────────────────────────────────────
 export function checkVoiceAvailability() {
   if (_voiceAvailable !== null) return _voiceAvailable;
   try {
-    const r = execSync(
-      'powershell -NoProfile -ExecutionPolicy Bypass -Command "Add-Type -AssemblyName System.Speech; Write-Output VOICE_OK"',
-      { encoding: "utf-8", timeout: 10000, stdio: ["pipe", "pipe", "pipe"] }
-    );
+    const psCmd = `Add-Type -AssemblyName System.Speech; Write-Output VOICE_OK`;
+    const enc = Buffer.from(psCmd, "utf16le").toString("base64");
+    const r = execSync(`powershell -NoProfile -ExecutionPolicy Bypass -EncodedCommand ${enc}`, {
+      encoding: "utf-8", timeout: 8000, stdio: ["pipe", "pipe", "pipe"]
+    });
     _voiceAvailable = r.trim().includes("VOICE_OK");
   } catch {
     _voiceAvailable = false;
@@ -66,67 +62,65 @@ export function checkVoiceAvailability() {
   return _voiceAvailable;
 }
 
-// ─── TTS: KAIRO Speaks (JARVIS Smooth Male Voice Engine) ──────────────
+// ─── TTS: KAIRO Speaks (PowerShell EncodedCommand System.Speech Engine) ─
 export function speak(text) {
   if (!_voiceAvailable) return;
   const cleaned = cleanForSpeech(text);
   if (!cleaned) return;
 
-  ensureTempDir();
-  const vbsPath = path.join(TEMP_DIR, "tts.vbs");
-  const vbsScript = `
-Set s = CreateObject("SAPI.SpVoice")
-On Error Resume Next
-For Each v In s.GetVoices
-    desc = LCase(v.GetDescription)
-    If InStr(desc, "david") > 0 Or InStr(desc, "george") > 0 Or InStr(desc, "mark") > 0 Or InStr(desc, "james") > 0 Or InStr(desc, "male") > 0 Or InStr(desc, "sam") > 0 Then
-        Set s.Voice = v
-        Exit For
-    End If
-Next
-s.Rate = 0
-s.Volume = 100
-s.Speak WScript.Arguments(0)
+  const psScript = `
+Add-Type -AssemblyName System.Speech;
+$s = New-Object System.Speech.Synthesis.SpeechSynthesizer;
+$s.Rate = 0;
+$s.Volume = 100;
+try {
+    foreach ($v in $s.GetInstalledVoices()) {
+        $n = $v.VoiceInfo.Name.ToLower();
+        if ($n.Contains("david") -or $n.Contains("george") -or $n.Contains("mark") -or $v.VoiceInfo.Gender -eq [System.Speech.Synthesis.VoiceGender]::Male) {
+            $s.SelectVoice($v.VoiceInfo.Name);
+            break;
+        }
+    }
+} catch {}
+$s.Speak("${cleaned.replace(/"/g, '`"').replace(/\$/g, '`$')}");
 `.trim();
 
-  fs.writeFileSync(vbsPath, vbsScript, "utf-8");
+  const encCommand = Buffer.from(psScript, "utf16le").toString("base64");
   try {
-    execSync(`cscript //NoLogo "${vbsPath}" "${cleaned.replace(/"/g, '""')}"`, {
-      timeout: 30000, stdio: "pipe",
+    execSync(`powershell -NoProfile -ExecutionPolicy Bypass -EncodedCommand ${encCommand}`, {
+      timeout: 30000, stdio: "ignore",
     });
-  } catch { /* silent */ }
+  } catch { /* silent fallback */ }
 }
 
-// Non-blocking speak (fire and forget — for narration during steps)
+// Non-blocking speak (async fire-and-forget — zero terminal lag)
 export function speakAsync(text) {
   if (!_voiceAvailable) return;
   const cleaned = cleanForSpeech(text);
   if (!cleaned) return;
 
-  ensureTempDir();
-  const id = Date.now();
-  const vbsPath = path.join(TEMP_DIR, `tts_${id}.vbs`);
-  const vbsScript = `
-Set s = CreateObject("SAPI.SpVoice")
-On Error Resume Next
-For Each v In s.GetVoices
-    desc = LCase(v.GetDescription)
-    If InStr(desc, "david") > 0 Or InStr(desc, "george") > 0 Or InStr(desc, "mark") > 0 Or InStr(desc, "james") > 0 Or InStr(desc, "male") > 0 Or InStr(desc, "sam") > 0 Then
-        Set s.Voice = v
-        Exit For
-    End If
-Next
-s.Rate = 0
-s.Volume = 100
-s.Speak WScript.Arguments(0)
+  const psScript = `
+Add-Type -AssemblyName System.Speech;
+$s = New-Object System.Speech.Synthesis.SpeechSynthesizer;
+$s.Rate = 0;
+$s.Volume = 100;
+try {
+    foreach ($v in $s.GetInstalledVoices()) {
+        $n = $v.VoiceInfo.Name.ToLower();
+        if ($n.Contains("david") -or $n.Contains("george") -or $n.Contains("mark") -or $v.VoiceInfo.Gender -eq [System.Speech.Synthesis.VoiceGender]::Male) {
+            $s.SelectVoice($v.VoiceInfo.Name);
+            break;
+        }
+    }
+} catch {}
+$s.Speak("${cleaned.replace(/"/g, '`"').replace(/\$/g, '`$')}");
 `.trim();
 
-  fs.writeFileSync(vbsPath, vbsScript, "utf-8");
-  const child = spawn("cscript", ["//NoLogo", vbsPath, cleaned], {
+  const encCommand = Buffer.from(psScript, "utf16le").toString("base64");
+  const child = spawn("powershell", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-EncodedCommand", encCommand], {
     stdio: "ignore", detached: true,
   });
   child.unref();
-  child.on("exit", () => { try { fs.unlinkSync(vbsPath); } catch {} });
 }
 
 // ─── STT: User Speaks (blocking — waits for speech) ──────────────────
@@ -137,7 +131,7 @@ export function listen(durationSec = DEFAULT_LISTEN_SEC) {
   const scriptPath = path.join(TEMP_DIR, "stt.ps1");
   const script = `
 Add-Type -AssemblyName System.Speech
-Start-Sleep -Milliseconds 400
+Start-Sleep -Milliseconds 300
 $r = New-Object System.Speech.Recognition.SpeechRecognitionEngine
 try {
   $r.SetInputToDefaultAudioDevice()
@@ -160,7 +154,7 @@ try {
   try {
     const result = execSync(`powershell -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -File "${scriptPath}"`, {
       encoding: "utf-8",
-      timeout: (durationSec + 12) * 1000,
+      timeout: (durationSec + 10) * 1000,
       stdio: ["pipe", "pipe", "pipe"],
     });
     return result.trim();
@@ -378,49 +372,15 @@ export async function refineVoiceWithOllama(rawSpokenText) {
   return cleanSpokenText(rawSpokenText);
 }
 
-// ─── Wake Word Detection (race: voice vs 3x Spacebar vs keyboard) ───
+// ─── Lightweight Wake Word / Keypress Detector (Zero Terminal Lag) ───
 export function detectWakeWordOrKeypress(listenSec = 7) {
   return new Promise((resolve) => {
     let resolved = false;
-    let sttProcess = null;
     let spaceCount = 0;
     let lastSpaceTime = 0;
     let onKeypress = null;
 
-    ensureTempDir();
-    const id = Date.now();
-    const scriptPath = path.join(TEMP_DIR, `wake_${id}.ps1`);
-    const script = `
-Add-Type -AssemblyName System.Speech
-$r = New-Object System.Speech.Recognition.SpeechRecognitionEngine
-try {
-  $r.SetInputToDefaultAudioDevice()
-  $dict = New-Object System.Speech.Recognition.DictationGrammar
-  $r.LoadGrammar($dict)
-  try {
-    $choices = New-Object System.Speech.Recognition.Choices
-    $choices.Add([string[]]@("hello kairo", "hey kairo", "hi kairo", "ok kairo", "kairo", "kairos"))
-    $gb = New-Object System.Speech.Recognition.GrammarBuilder($choices)
-    $g = New-Object System.Speech.Recognition.Grammar($gb)
-    $r.LoadGrammar($g)
-  } catch {}
-  $result = $r.Recognize([TimeSpan]::FromSeconds(${listenSec}))
-  if ($result -and $result.Text) {
-    Write-Output $result.Text
-  }
-} catch {} finally {
-  try { $r.Dispose() } catch {}
-}
-`.trim();
-
-    fs.writeFileSync(scriptPath, script, "utf-8");
-
     function cleanup() {
-      if (sttProcess) {
-        try { sttProcess.kill(); } catch {}
-        sttProcess = null;
-      }
-      try { if (fs.existsSync(scriptPath)) fs.unlinkSync(scriptPath); } catch {}
       if (process.stdin.isTTY && process.stdin.setRawMode) {
         try { process.stdin.setRawMode(false); } catch {}
       }
@@ -466,27 +426,9 @@ try {
         }
       };
       process.stdin.on("keypress", onKeypress);
+    } else {
+      finish("keyboard");
     }
-
-    // Voice listener (async powershell STT spawn - hidden)
-    sttProcess = spawn("powershell", [
-      "-NoProfile", "-ExecutionPolicy", "Bypass", "-WindowStyle", "Hidden", "-File", scriptPath
-    ], { stdio: ["pipe", "pipe", "pipe"] });
-
-    let stdoutData = "";
-    sttProcess.stdout.on("data", (chunk) => {
-      stdoutData += chunk.toString();
-    });
-
-    sttProcess.on("exit", () => {
-      if (resolved) return;
-      const text = stdoutData.trim();
-      if (text && matchesWakeWord(text)) {
-        finish("voice");
-      } else {
-        finish("timeout");
-      }
-    });
   });
 }
 

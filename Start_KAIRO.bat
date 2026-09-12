@@ -5,7 +5,7 @@ cls
 echo.
 echo  ===================================================================
 echo    🤖 KAIRO — Kairos Opportune Timing Assistant (kairo-apply)
-echo    JARVIS Voice Persona • PS11 Pipeline • 0-Token Q-Cache Replay
+echo    JARVIS Voice Persona • 9-Stage Tailoring Pipeline • 0-Token Q-Cache Replay
 echo  ===================================================================
 echo.
 echo  [SYSTEM] Starting KAIRO in Voice Mode...
