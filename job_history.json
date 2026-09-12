@@ -1,34 +1,49 @@
 {
   "dailyTop5": [
     {
-      "id": "linkedin-stripe-sr-fullstack-2026",
-      "title": "Senior Full Stack Engineer (Node.js & React)",
-      "company": "Stripe",
-      "location": "Remote / San Francisco, CA",
+      "id": "wellfound-linear-frontend-2026",
+      "title": "Frontend Engineer (React / UI Performance)",
+      "company": "Linear",
+      "location": "Remote (Global)",
       "remote_type": "remote",
-      "salary_range": "$145,000 - $185,000 / year",
-      "experience_required": "2-5 years",
+      "salary_range": "$130,000 - $160,000 / year + Equity",
+      "experience_required": "2-4 years",
       "requirements": [
-        "JavaScript",
-        "TypeScript",
-        "Node.js",
         "React",
-        "API Architecture",
-        "Distributed Systems"
+        "Next.js",
+        "TailwindCSS",
+        "State Management",
+        "UI Micro-animations"
       ],
       "responsibilities": [
-        "Build scalable payment APIs",
-        "Optimize frontend dashboard performance",
-        "Design microservices"
+        "Craft lightning fast issue tracking UI",
+        "Build custom WebGL components"
       ],
-      "posted_or_updated_date": "2026-09-11",
-      "application_deadline": "2026-10-15",
-      "num_applicants": 28,
-      "open_positions": 3,
-      "company_rating": 4.8,
-      "company_review_snippet": "Top tier engineering culture with high autonomy and modern stack.",
-      "application_url": "https://stripe.com/jobs",
-      "source": "LinkedIn Jobs"
+      "posted_or_updated_date": "2026-09-10",
+      "application_deadline": "2026-09-30",
+      "num_applicants": 45,
+      "open_positions": 2,
+      "company_rating": 4.9,
+      "company_review_snippet": "Craft-obsessed team building world class developer tools.",
+      "application_url": "https://linear.app/careers",
+      "source": "Wellfound / AngelList",
+      "match_score": 55,
+      "match_breakdown": {
+        "skills_30": 25,
+        "title_20": 15,
+        "salary_15": 0,
+        "deadline_10": 10,
+        "rating_10": 10,
+        "freshness_10": 10,
+        "competition_5": 0
+      },
+      "why_suitable": "This role requires React and UI performance optimization, which align with your skills. The application deadline is soon, and the company has excellent reviews.",
+      "cover_letter_draft": "Dear Hiring Manager, I am excited to apply for the Frontend Engineer position at Linear. My expertise in React and UI performance optimization makes me a strong fit for this role. I am particularly drawn to Linear's focus on crafting world-class developer tools and would be thrilled to contribute to your team.",
+      "resume_bullet_rewrites": [
+        "Optimized UI performance for a high-traffic web application using React.",
+        "Developed custom WebGL components for enhanced user experience.",
+        "Implemented state management solutions for scalable frontend applications."
+      ]
     },
     {
       "id": "google-sw-eng-3-web-2026",
@@ -58,35 +73,116 @@
       "company_rating": 4.7,
       "company_review_snippet": "Exceptional benefits, smart peers, cutting-edge AI infrastructure.",
       "application_url": "https://careers.google.com",
-      "source": "Company Career Page"
+      "source": "Company Career Page",
+      "match_score": 50,
+      "match_breakdown": {
+        "skills_30": 25,
+        "title_20": 15,
+        "salary_15": 0,
+        "deadline_10": 5,
+        "rating_10": 10,
+        "freshness_10": 10,
+        "competition_5": 0
+      },
+      "why_suitable": "This role aligns with your skills in React, Python, and algorithms. However, the salary range exceeds your target, and the competition level is high.",
+      "cover_letter_draft": "Dear Hiring Manager, I am eager to apply for the Software Engineer III - Web Platform position at Google. My experience with React, Python, and algorithms makes me a strong candidate for this role. I am particularly excited about the opportunity to work on high-throughput web components and collaborate with a globally distributed team.",
+      "resume_bullet_rewrites": [
+        "Developed high-performance web components using React and Python.",
+        "Optimized rendering pipelines for improved performance.",
+        "Collaborated with global teams to deliver scalable web solutions."
+      ]
     },
     {
-      "id": "wellfound-linear-frontend-2026",
-      "title": "Frontend Engineer (React / UI Performance)",
-      "company": "Linear",
-      "location": "Remote (Global)",
+      "id": "indeed-vercel-nextjs-2026",
+      "title": "Core Web Developer - DX Team",
+      "company": "Vercel",
+      "location": "Remote (Worldwide)",
       "remote_type": "remote",
-      "salary_range": "$130,000 - $160,000 / year + Equity",
-      "experience_required": "2-4 years",
+      "salary_range": "$120,000 - $150,000 / year",
+      "experience_required": "1-3 years",
       "requirements": [
-        "React",
         "Next.js",
-        "TailwindCSS",
-        "State Management",
-        "UI Micro-animations"
+        "Node.js",
+        "TypeScript",
+        "Serverless",
+        "Edge Functions"
       ],
       "responsibilities": [
-        "Craft lightning fast issue tracking UI",
-        "Build custom WebGL components"
+        "Improve Next.js developer experience",
+        "Maintain core framework open source"
       ],
-      "posted_or_updated_date": "2026-09-10",
-      "application_deadline": "2026-09-30",
-      "num_applicants": 45,
+      "posted_or_updated_date": "2026-09-12",
+      "application_deadline": "2026-10-05",
+      "num_applicants": 34,
       "open_positions": 2,
-      "company_rating": 4.9,
-      "company_review_snippet": "Craft-obsessed team building world class developer tools.",
-      "application_url": "https://linear.app/careers",
-      "source": "Wellfound / AngelList"
+      "company_rating": 4.8,
+      "company_review_snippet": "Ship features to millions of developers every single day.",
+      "application_url": "https://vercel.com/careers",
+      "source": "Indeed",
+      "match_score": 50,
+      "match_breakdown": {
+        "skills_30": 20,
+        "title_20": 15,
+        "salary_15": 0,
+        "deadline_10": 10,
+        "rating_10": 10,
+        "freshness_10": 10,
+        "competition_5": 0
+      },
+      "why_suitable": "This role requires Node.js and Next.js, which align with your skills. The application deadline is soon, and the company has excellent reviews.",
+      "cover_letter_draft": "Dear Hiring Manager, I am excited to apply for the Core Web Developer - DX Team position at Vercel. My expertise in Node.js and Next.js makes me a strong fit for this role. I am particularly drawn to Vercel's mission to ship features to millions of developers and would be thrilled to contribute to your team.",
+      "resume_bullet_rewrites": [
+        "Improved Next.js developer experience through optimized code and documentation.",
+        "Maintained core framework open source projects with a focus on reliability.",
+        "Developed serverless and edge functions for scalable web applications."
+      ]
+    },
+    {
+      "id": "linkedin-stripe-sr-fullstack-2026",
+      "title": "Senior Full Stack Engineer (Node.js & React)",
+      "company": "Stripe",
+      "location": "Remote / San Francisco, CA",
+      "remote_type": "remote",
+      "salary_range": "$145,000 - $185,000 / year",
+      "experience_required": "2-5 years",
+      "requirements": [
+        "JavaScript",
+        "TypeScript",
+        "Node.js",
+        "React",
+        "API Architecture",
+        "Distributed Systems"
+      ],
+      "responsibilities": [
+        "Build scalable payment APIs",
+        "Optimize frontend dashboard performance",
+        "Design microservices"
+      ],
+      "posted_or_updated_date": "2026-09-11",
+      "application_deadline": "2026-10-15",
+      "num_applicants": 28,
+      "open_positions": 3,
+      "company_rating": 4.8,
+      "company_review_snippet": "Top tier engineering culture with high autonomy and modern stack.",
+      "application_url": "https://stripe.com/jobs",
+      "source": "LinkedIn Jobs",
+      "match_score": 45,
+      "match_breakdown": {
+        "skills_30": 20,
+        "title_20": 10,
+        "salary_15": 0,
+        "deadline_10": 5,
+        "rating_10": 10,
+        "freshness_10": 10,
+        "competition_5": 0
+      },
+      "why_suitable": "This role requires JavaScript and React, which align with your skills. However, the salary range is significantly higher than your target, and the experience requirement may not match your background.",
+      "cover_letter_draft": "Dear Hiring Manager, I am excited to apply for the Senior Full Stack Engineer position at Stripe. With my expertise in JavaScript and React, I am confident in my ability to contribute to your team. I am particularly drawn to Stripe's innovative approach to payment solutions and would be thrilled to bring my skills to such a forward-thinking company.",
+      "resume_bullet_rewrites": [
+        "Developed scalable APIs using JavaScript and React.",
+        "Optimized frontend performance for a high-traffic web application.",
+        "Designed and implemented microservices architecture."
+      ]
     },
     {
       "id": "unstop-openai-agent-eng-2026",
@@ -115,36 +211,24 @@
       "company_rating": 4.9,
       "company_review_snippet": "Pioneering AGI research environment with incredible talent density.",
       "application_url": "https://openai.com/careers",
-      "source": "Unstop / OpenAI Careers"
-    },
-    {
-      "id": "naukri-microsoft-cloud-2026",
-      "title": "Cloud & Backend Software Engineer",
-      "company": "Microsoft",
-      "location": "Hyderabad, India / Remote",
-      "remote_type": "hybrid",
-      "salary_range": "₹24,000,000 - ₹35,000,000 / year",
-      "experience_required": "2-4 years",
-      "requirements": [
-        "Node.js",
-        "C# / .NET",
-        "Azure",
-        "Distributed Databases",
-        "Microservices"
-      ],
-      "responsibilities": [
-        "Scale cloud services",
-        "Improve backend reliability",
-        "Write resilient async code"
-      ],
-      "posted_or_updated_date": "2026-09-09",
-      "application_deadline": "2026-10-10",
-      "num_applicants": 89,
-      "open_positions": 6,
-      "company_rating": 4.6,
-      "company_review_snippet": "Great work-life balance and strong career growth support.",
-      "application_url": "https://careers.microsoft.com",
-      "source": "Naukri"
+      "source": "Unstop / OpenAI Careers",
+      "match_score": 40,
+      "match_breakdown": {
+        "skills_30": 20,
+        "title_20": 10,
+        "salary_15": 0,
+        "deadline_10": 5,
+        "rating_10": 10,
+        "freshness_10": 10,
+        "competition_5": 0
+      },
+      "why_suitable": "This role requires Python and Node.js, which align with your skills. However, the salary range is significantly higher than your target, and the experience requirement may not match your background.",
+      "cover_letter_draft": "Dear Hiring Manager, I am excited to apply for the AI Agent & Browser Automation Engineer position at OpenAI. My expertise in Python and Node.js makes me a strong candidate for this role. I am particularly drawn to OpenAI's pioneering work in AGI research and would be thrilled to contribute to your team.",
+      "resume_bullet_rewrites": [
+        "Developed autonomous AI agents using Python and Node.js.",
+        "Optimized web browsing primitives for enhanced performance.",
+        "Implemented reinforcement learning algorithms for benchmark optimization."
+      ]
     }
   ],
   "savedJobs": [],

@@ -57,26 +57,18 @@ function getOpenRouterKeys() {
 
 // OpenRouter models to try in order (active high-speed & free models prioritized)
 const OPENROUTER_MODELS = [
-  "google/gemini-2.0-flash-lite-001:free",
   "google/gemini-2.0-flash-exp:free",
-  "meta-llama/llama-3.3-70b-instruct:free",
-  "deepseek/deepseek-r1:free",
-  "qwen/qwen-2.5-7b-instruct:free",
-  "mistralai/mistral-7b-instruct:free",
-  "deepseek/deepseek-chat",
-  "google/gemini-2.0-flash-001",
   "meta-llama/llama-3.3-70b-instruct",
-  "qwen/qwen-2.5-7b-instruct",
   "deepseek/deepseek-r1-distill-llama-70b",
+  "qwen/qwen-2.5-7b-instruct",
   "mistralai/mistral-7b-instruct",
 ];
 
 // Gemini models to cycle through per key (active & reliable endpoints)
 const GEMINI_MODELS = [
-  "gemini-2.0-flash",
-  "gemini-1.5-flash",
-  "gemini-1.5-flash-8b",
-  "gemini-1.5-pro",
+  "gemini-1.5-flash-latest",
+  "gemini-1.5-pro-latest",
+  "gemini-2.0-flash-exp",
 ];
 
 // ─── Tier 1: Local Claude Proxy ──────────────────────────────────────
@@ -199,6 +191,14 @@ async function tryGemini(prompt, systemPrompt, options) {
             cooldownSec = parseInt(retryAfterHeader, 10) || 20;
           } else if (retryMatch) {
             cooldownSec = Math.ceil(parseFloat(retryMatch[1])) + 2;
+          }
+
+          if (status === 404 || (typeof lastError === "string" && (
+            lastError.includes("no longer available") ||
+            lastError.includes("not found for API version")
+          ))) {
+            setCooldown(modelKeyId, 86400);
+            break;
           }
 
           if (status === 400 || status === 403 || (typeof lastError === "string" && (

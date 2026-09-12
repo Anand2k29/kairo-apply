@@ -40,7 +40,7 @@ const C = {
   r: "\x1b[0m", b: "\x1b[1m", d: "\x1b[2m",
   cyan: "\x1b[36m", yellow: "\x1b[33m", green: "\x1b[32m",
   magenta: "\x1b[35m", blue: "\x1b[34m", red: "\x1b[31m",
-  bgCyan: "\x1b[46m", bgMag: "\x1b[45m", bgBlue: "\x1b[44m",
+  bgCyan: "\x1b[46m", bgMag: "\x1b[45m", bgBlue: "\x1b[44m", bgGreen: "\x1b[42m",
 };
 const STEP_DELAY_MS = 50; // ⚡ Ultra-fast 50ms step latency
 
