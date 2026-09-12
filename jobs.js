@@ -420,7 +420,8 @@ ${J.cyan}╰──────────────────────�
     const newLoc = await askInput(`  ${J.yellow}Enter target location (or press Enter for Remote):${J.reset} `) || "Remote";
     history.lastDailyDate = null;
     saveJobHistory(history);
-    return getDailyTop5Jobs(newRole, newLoc).then(() => renderJobDashboard());
+    await getDailyTop5Jobs(newRole, newLoc);
+    return await renderJobDashboard();
   }
 
   return null;
