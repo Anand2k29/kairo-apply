@@ -647,14 +647,12 @@ export function narrate(message) {
   }
 }
 
-// ─── KAIRO (JARVIS Persona) Greetings ─────────────────────────────────
+// ─── KAIRO Female Voice Persona Greetings ────────────────────────────
 export function greetUser() {
-  const vp = loadVoiceProfile();
-  const calibratedText = vp ? " Acoustic calibration is verified." : "";
   const greetings = [
-    `Online and at your service, sir. I am KAIRO, your Kairos opportune timing assistant.${calibratedText} How may I assist your workflow today?`,
-    `KAIRO systems operational. Ready to optimize your browser and application tasks.${calibratedText} What are your orders?`,
-    `Welcome. KAIRO is active and awaiting your instructions.${calibratedText} What shall we execute?`,
+    `Hello, I am KAIRO. Ready for your commands.`,
+    `KAIRO online. How may I assist your workflow today?`,
+    `Welcome! KAIRO is active and ready for your instructions.`,
   ];
   const greeting = greetings[Math.floor(Math.random() * greetings.length)];
   console.log(`  ${V.green}${V.b}🤖 KAIRO:${V.r} ${V.cyan}"${greeting}"${V.r}\n`);
@@ -663,12 +661,12 @@ export function greetUser() {
 
 export function announceStep(stepDesc) {
   if (!_voiceMode) return;
-  const short = stepDesc.length > 80 ? stepDesc.slice(0, 80) : stepDesc;
+  const short = stepDesc.length > 60 ? stepDesc.slice(0, 60) : stepDesc;
   speakAsync(short);
 }
 
 export function announceCompletion() {
-  speak("Task execution complete. Your workflow has been executed and saved successfully.");
+  speak("Workflow execution complete. All steps executed successfully.");
 }
 
 // ─── Cleanup temp files ──────────────────────────────────────────────
