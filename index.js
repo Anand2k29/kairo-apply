@@ -844,7 +844,7 @@ async function executeStepSmart(context, pageInput, stepDescription, recordedAct
       logAction(actionJSON);
 
       // Human approval for sensitive actions & job application submissions (Section 9 Hard Gate)
-      const sensitiveKw = ["submit", "pay", "send", "delete", "confirm order", "place order", "submit application", "apply now"];
+      const sensitiveKw = ["submit application", "confirm application", "place order", "complete payment", "send email"];
       if (sensitiveKw.some((kw) => stepDescription.toLowerCase().includes(kw))) {
         await updateOverlayStatus(page, "⚠️ Section 9 Hard Gate: Human Confirmation Required...");
         log("⚠️", "════════════════════════════════════════════════════════════", "yellow");

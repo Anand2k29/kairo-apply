@@ -55,20 +55,18 @@ function getOpenRouterKeys() {
   ].filter(Boolean);
 }
 
-// OpenRouter models to try in order (active high-speed & free models prioritized)
+// OpenRouter models to try in order (active high-speed models prioritized)
 const OPENROUTER_MODELS = [
-  "google/gemini-2.0-flash-exp:free",
+  "deepseek/deepseek-chat",
   "meta-llama/llama-3.3-70b-instruct",
-  "deepseek/deepseek-r1-distill-llama-70b",
   "qwen/qwen-2.5-7b-instruct",
-  "mistralai/mistral-7b-instruct",
 ];
 
 // Gemini models to cycle through per key (active & reliable endpoints)
 const GEMINI_MODELS = [
-  "gemini-1.5-flash-latest",
-  "gemini-1.5-pro-latest",
-  "gemini-2.0-flash-exp",
+  "gemini-2.0-flash",
+  "gemini-1.5-flash",
+  "gemini-1.5-pro",
 ];
 
 // ─── Tier 1: Local Claude Proxy ──────────────────────────────────────
@@ -672,9 +670,9 @@ export async function injectOverlay(page) {
           100% { outline: 3px solid transparent; }
         }
         .sr-highlight { animation: sr-highlight 1.5s ease-in-out 3; }
-      </style>
-    `;
-    document.body.appendChild(overlay);
+      const target = document.body || document.documentElement;
+      if (target) target.appendChild(overlay);
+    } catch {}
   });
 }
 
