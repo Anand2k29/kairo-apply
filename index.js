@@ -222,7 +222,24 @@ ${C.cyan}╰──────────────────────�
 function getFallbackPlan(goal, profile) {
   const goalLower = goal.toLowerCase();
 
-  // 1. Job application fallback plan
+  // 1. Direct URL navigation goal (e.g. Job Application URLs)
+  const urlMatch = goal.match(/https?:\/\/[^\s,)]+/i);
+  if (urlMatch) {
+    const targetUrl = urlMatch[0].replace(/[.,]$/, '');
+    if (goalLower.includes("apply") || goalLower.includes("job") || goalLower.includes("career")) {
+      return [
+        `Navigate to ${targetUrl}`,
+        `wait_for_login`,
+        `Click "Apply Now" or "Easy Apply" button`,
+        `Fill contact details using candidate profile (${profile?.name || 'Candidate'}, ${profile?.email || 'email@example.com'})`,
+        `Upload resume or paste cover letter text`,
+        `Pause before submitting application for human confirmation`,
+        `done`
+      ];
+    }
+  }
+
+  // 2. Generic job search fallback plan
   if (goalLower.includes("job") || goalLower.includes("apply") || goalLower.includes("linkedin") || goalLower.includes("indeed") || goalLower.includes("naukri")) {
     let role = "Software Engineer";
     const match = goal.match(/search for "([^"]+)"|for ([^.]+)|search ([^.]+)/i);
