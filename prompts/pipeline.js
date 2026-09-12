@@ -71,7 +71,7 @@ Experience Years: ${profile.experience_years || "2-4 years"}
 Verified Skills: ${profile.skills || "JavaScript, TypeScript, Node.js, React, Python, Automation"}
 Summary: ${profile.resume_summary || "Full Stack Engineer with experience building scalable web applications and automated workflows."}
 Verified Projects:
-- SlabRoute: Autonomous browser & application assistant using dual-model LLM routing, Playwright, and local workflow Q-cache.
+- KAIRO: Autonomous browser & application assistant using dual-model LLM routing, Playwright, and local workflow Q-cache.
 - API Performance Suite: Micro-services optimization project reducing latency by 35%.
   `.trim();
 

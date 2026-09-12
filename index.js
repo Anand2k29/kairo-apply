@@ -283,7 +283,7 @@ function getFallbackPlan(goal, profile) {
 
 async function askPlanner(goal, profile) {
   const profileContext = getAutoFillContext(profile);
-  const systemPrompt = `You are the self-learning browser automation planner for SlabRoute (built on webcmd-browser architecture).
+  const systemPrompt = `You are the self-learning browser automation planner for KAIRO (built on webcmd-browser architecture).
 
 Given a user goal, decompose it into an ordered list of atomic browser steps.
 
@@ -338,7 +338,7 @@ ${profileContext ? `User profile for auto-filling:\n${profileContext}` : ''}`;
 // ─── Worker (uses Smart DOM & webcmd locators for speed) ──────────────
 async function askWorker(stepDescription, smartDOM, profile) {
   const profileContext = getAutoFillContext(profile);
-  const systemPrompt = `You are a browser-action executor for SlabRoute (webcmd-browser engine).
+  const systemPrompt = `You are a browser-action executor for KAIRO (webcmd-browser engine).
 
 Given a step description and page elements, return the exact action to execute.
 

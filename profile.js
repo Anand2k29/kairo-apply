@@ -51,8 +51,8 @@ ${COLORS.bgCyan}${COLORS.bright}                                                
 ${COLORS.bgCyan}${COLORS.bright}   👤  User Profile Setup                           ${COLORS.reset}
 ${COLORS.bgCyan}${COLORS.bright}                                                    ${COLORS.reset}
 
-${COLORS.dim}SlabRoute needs your details to auto-fill forms on websites.
-Your data is stored locally in user_profile.json and NEVER sent to any LLM.${COLORS.reset}
+${COLORS.dim}KAIRO needs your details to auto-fill forms on job portals and websites.
+Your data is stored locally in user_profile.json and NEVER sent to any external server.${COLORS.reset}
 `);
 
   const profile = existing || {};
@@ -114,7 +114,7 @@ ${COLORS.bgMagenta}${COLORS.bright}   🛒  Daily Life Routine Shopping Setup   
 ${COLORS.bgMagenta}${COLORS.bright}                                                    ${COLORS.reset}
 
 ${COLORS.dim}Set up items you order regularly (e.g., Milk, Eggs, Bread, Coffee).
-SlabRoute will learn the path on First Run and replay instantly with 0 tokens!${COLORS.reset}
+KAIRO will learn the path on First Run and replay instantly with 0 tokens!${COLORS.reset}
 `);
 
   if (existing.length > 0) {

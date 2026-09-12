@@ -648,9 +648,9 @@ export async function askVision(screenshotBase64, prompt) {
 // what the agent is thinking/doing — this is a hackathon differentiator!
 export async function injectOverlay(page) {
   await page.evaluate(() => {
-    if (document.getElementById('slabroute-overlay')) return;
+    if (document.getElementById('kairo-overlay')) return;
     const overlay = document.createElement('div');
-    overlay.id = 'slabroute-overlay';
+    overlay.id = 'kairo-overlay';
     overlay.innerHTML = `
       <div id="sr-status" style="
         position: fixed; top: 0; left: 0; right: 0; z-index: 2147483647;

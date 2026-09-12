@@ -427,7 +427,13 @@ ${J.cyan}└──────────────────────�
 
 // ─── Section 7 & 9: Individual Job Selection & Human-Gated Flow ──────
 export async function handleJobSelection(job) {
-  const profile = loadProfile() || {};
+  let profile = loadProfile();
+  if (!profile || !profile.name) {
+    console.log(`\n  ${J.yellow}👤 Candidate profile incomplete! Let's set up your profile details first.${J.reset}\n`);
+    profile = await setupProfile();
+  } else {
+    profile = loadProfile() || {};
+  }
   console.log(`
 ${J.bgMag}${J.bright}                                                                    ${J.reset}
 ${J.bgMag}${J.bright}   📄  Selected Job: ${job.title} (${job.company})                     ${J.reset}
@@ -459,10 +465,11 @@ ${(job.resume_bullet_rewrites || []).map(b => `  • ${b}`).join("\n")}
   const act = await askInput(`  ${J.bright}Choose action (1-5):${J.reset} `);
 
   if (act === "1") {
+    const profStr = `Name: ${profile.name || "Candidate"}, Email: ${profile.email || "email@example.com"}, Phone: ${profile.phone || "+91-9876543210"}, Skills: ${profile.skills || "JavaScript, React, Node.js, Python"}, Experience: ${profile.experience_years || "3 years"}, City: ${profile.city || "Remote"}`;
     return {
       action: "AUTO_APPLY_JOB",
       job,
-      goal: `Navigate to ${job.application_url}. Click "Easy Apply" or "Apply Now", fill contact information using user profile (${profile.name || "Candidate"}, ${profile.email || "email@example.com"}, ${profile.phone || "+91-9876543210"}), paste cover letter text, and PAUSE BEFORE SUBMITTING to ask user for explicit confirmation.`,
+      goal: `Navigate to ${job.application_url}. Click "Easy Apply" or "Apply Now", fill contact information using candidate profile (${profStr}), paste cover letter text, and PAUSE BEFORE SUBMITTING to ask user for explicit confirmation.`,
     };
   }
 
