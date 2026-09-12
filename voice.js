@@ -36,14 +36,21 @@ function stripAnsi(text) {
 }
 
 function cleanForSpeech(text) {
-  return stripAnsi(text)
-    .replace(/https?:\/\/\S+/gi, "link")   // Replace URLs with "link"
-    .replace(/[═╔╗╚╝║─┐┌└┘│▓░▒█]/g, "")   // Box chars
+  let cleaned = stripAnsi(text)
+    .replace(/https?:\/\/\S+/gi, " link ")   // Replace URLs with "link"
+    .replace(/[═╔╗╚╝║─┐┌└┘│▓░▒█]/g, " ")     // Box chars
     .replace(/[\[\]\(\)\{\}\*\#\_\~]/g, " ") // Markdown special chars -> space
-    .replace(/[^\x20-\x7E\s]/g, " ")       // Non-ASCII → space
-    .replace(/\s+/g, " ")                   // Normalize whitespace
+    .replace(/[^\x20-\x7E\s]/g, " ")          // Non-ASCII → space
+    .replace(/\bKAIRO\b/g, "Kai-ro")          // Phonetic clarity
+    .replace(/([a-z0-9])([A-Z])/g, "$1, $2")  // Pause on camelCase boundary
+    .replace(/\s*•\s*/g, ". ")               // Bullet points -> natural pause
+    .replace(/\s*↳\s*/g, ", ")               // Sub-points -> comma pause
+    .replace(/\s*─+\s*/g, ". ")              // Dividers -> sentence pause
+    .replace(/\s+/g, " ")                      // Normalize whitespace
     .trim()
     .slice(0, 450);
+
+  return cleaned;
 }
 
 // ─── Check Voice Availability ────────────────────────────────────────
@@ -64,8 +71,11 @@ export function checkVoiceAvailability() {
 
 function getVoiceConfig() {
   const vp = loadVoiceProfile() || {};
+  const rateVal = vp.speech_rate ?? -1;  // -1 = natural articulate human speed
+  const ratePercentStr = rateVal === 0 ? "0%" : (rateVal < 0 ? `${rateVal * 4}%` : `+${rateVal * 4}%`);
   return {
-    rate: vp.speech_rate ?? 0,          // -10 to +10
+    rate: rateVal,
+    ratePercent: ratePercentStr,
     pitch: vp.speech_pitch || "+1st",   // Warm, clear female tone
   };
 }
@@ -95,7 +105,7 @@ try {
     }
 } catch {}
 try {
-    $ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'><prosody rate='${cfg.rate >= 0 ? '+' : ''}${cfg.rate * 5}%' pitch='${cfg.pitch}'>${safeText}</prosody></speak>";
+    $ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'><prosody rate='${cfg.ratePercent}' pitch='${cfg.pitch}'>${safeText}</prosody></speak>";
     $s.SpeakSsml($ssml);
 } catch {
     $s.Speak("${safeText}");
@@ -135,7 +145,7 @@ try {
     }
 } catch {}
 try {
-    $ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'><prosody rate='${cfg.rate >= 0 ? '+' : ''}${cfg.rate * 5}%' pitch='${cfg.pitch}'>${safeText}</prosody></speak>";
+    $ssml = "<speak version='1.0' xmlns='http://www.w3.org/2001/10/synthesis' xml:lang='en-US'><prosody rate='${cfg.ratePercent}' pitch='${cfg.pitch}'>${safeText}</prosody></speak>";
     $s.SpeakSsml($ssml);
 } catch {
     $s.Speak("${safeText}");
