@@ -2,10 +2,17 @@
 
 > **Agentic AI Hackathon** | **Tech Zephyr 4.0 | IIT Bhubaneswar**
 > *"Build AI Systems That Act, Adapt, and Execute."*
-> **GitHub Repository**: [https://github.com/Anand2k29/kairo-apply](https://github.com/Anand2k29/kairo-apply)
+> **GitHub Repository**: [https://github.com/Anand2k29/kairo-apply](https://github.com/Anand2k29/kairo-apply)  
+> **🎥 Live Demo Video**: [Watch KAIRO Demo Video (Google Drive)](https://drive.google.com/drive/folders/1WNa_jeNv5_m0xMzjTBcVfFDtDvMApSn7?usp=sharing)
 > Powered by **webcmd** architecture & **KAIRO (Kairos Opportune Timing Assistant — Female Voice Persona)** — *"Hello KAIRO"*
 
-**KAIRO** (`kairo-apply`) — evoking *Kairos* (the right, opportune moment for job applications and execution) — is a state-of-the-art autonomous browser agent built on the **webcmd** autonomous web automation engine. It combines female voice-activated AI (**KAIRO** - `Microsoft Zira`), multi-tier LLM waterfalls (**Ollama** + **claude-code-for-free** + **Gemini** + **OpenRouter** + **Free Models Cascade**), an RL Q-value trajectory cache, an AI Job Discovery Assistant with the **9-Stage Resume Tailoring & Fact-Checking Pipeline**, and live visual Playwright Chromium browser execution.
+---
+
+## 🎥 Demonstration Video
+
+> [!TIP]
+> 📺 **Watch KAIRO in Action**: Access the complete live demonstration video showcasing hands-free voice control, live visual Playwright application, multi-tier LLM waterfall resilience, and sub-200ms DOM Q-replay here:  
+> 👉 **[KAIRO Project Demo Video Folder (Google Drive)](https://drive.google.com/drive/folders/1WNa_jeNv5_m0xMzjTBcVfFDtDvMApSn7?usp=sharing)**
 
 ---
 

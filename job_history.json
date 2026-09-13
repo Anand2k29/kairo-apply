@@ -434,6 +434,58 @@
       "applied_at": "2026-09-12T18:16:11.339Z",
       "status": "Application Page Opened — Pending User Confirmation",
       "user_confirmed": true
+    },
+    {
+      "job": {
+        "id": "google-sw-eng-3-web-2026",
+        "title": "Software Engineer III - Web Platform",
+        "company": "Google",
+        "location": "Bangalore, India / Remote",
+        "remote_type": "hybrid",
+        "salary_range": "₹28,000,000 - ₹42,000,000 / year ($120k+)",
+        "experience_required": "1-4 years",
+        "requirements": [
+          "Algorithms",
+          "Web APIs",
+          "React",
+          "Python",
+          "Node.js",
+          "Performance Tuning"
+        ],
+        "responsibilities": [
+          "Develop high-throughput web components",
+          "Optimize rendering pipeline",
+          "Collaborate globally"
+        ],
+        "posted_or_updated_date": "2026-09-12",
+        "application_deadline": "2026-10-30",
+        "num_applicants": 114,
+        "open_positions": 5,
+        "company_rating": 4.7,
+        "company_review_snippet": "Exceptional benefits, smart peers, cutting-edge AI infrastructure.",
+        "application_url": "https://careers.google.com",
+        "source": "Company Career Page",
+        "match_score": 60,
+        "match_breakdown": {
+          "skills_30": 20,
+          "title_20": 10,
+          "salary_15": 0,
+          "deadline_10": 5,
+          "rating_10": 10,
+          "freshness_10": 8,
+          "competition_5": 7
+        },
+        "why_suitable": "This role aligns well with your skills in Python, React, and algorithms. The salary is above your target, but the role's requirements closely match your expertise.",
+        "cover_letter_draft": "Dear Hiring Team, I am thrilled to apply for the Software Engineer III position at Google. My proficiency in Python and React, combined with my experience in algorithm design, makes me a strong fit for your Web Platform team. I am eager to contribute to your high-performance web components and collaborate with your global team.",
+        "resume_bullet_rewrites": [
+          "Designed and implemented algorithms to optimize web application performance.",
+          "Developed web applications using React and Python, ensuring scalability and efficiency.",
+          "Collaborated on performance tuning projects to enhance user experience."
+        ]
+      },
+      "applied_at": "2026-09-12T18:18:53.934Z",
+      "status": "Application Page Opened — Pending User Confirmation",
+      "user_confirmed": true
     }
   ],
   "seenJobIds": [
